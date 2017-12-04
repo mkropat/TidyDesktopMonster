@@ -61,6 +61,10 @@
     <Compile Include="Scheduling\ExponentialBackoffLogic.cs" />
     <Compile Include="Scheduling\WorkScheduler.cs" />
     <Compile Include="WinApi\FilesInDirectorySubject.cs" />
+    <Compile Include="WinApi\Shell32\FileOperation.cs" />
+    <Compile Include="WinApi\Shell32\FileOperationFlags.cs" />
+    <Compile Include="WinApi\Shell32\Shell32Delete.cs" />
+    <Compile Include="WinApi\Shell32\ShellFileOptions.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

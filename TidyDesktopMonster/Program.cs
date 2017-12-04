@@ -1,9 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using TidyDesktopMonster.Scheduling;
 using TidyDesktopMonster.WinApi;
+using TidyDesktopMonster.WinApi.Shell32;
 
 namespace TidyDesktopMonster
 {
@@ -25,7 +25,7 @@ namespace TidyDesktopMonster
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
             using (var subject = new FilesInDirectorySubject(directoryToMonitor, "*.lnk"))
             {
-                var service = new PerformActionOnUpdatingSubject<string>(subject, action: File.Delete, scheduler: scheduler);
+                var service = new PerformActionOnUpdatingSubject<string>(subject, action: Shell32Delete.DeleteFile, scheduler: scheduler);
                 RunForm(new MainForm(
                     AppPath,
                     startService: service.Run));
