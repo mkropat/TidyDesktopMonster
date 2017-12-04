@@ -10,9 +10,12 @@ namespace TidyDesktopMonster
     public partial class MainForm : Form
     {
         readonly string _appPath;
-        readonly CancellationTokenSource _serviceCts = new CancellationTokenSource();
+        CancellationTokenSource _serviceCts = new CancellationTokenSource();
+        Task _serviceTask = Task.FromResult<object>(null);
         readonly Func<CancellationToken, Task> _startService;
-        readonly Container _trayContainer = new Container();
+        Container _trayContainer = new Container();
+
+        bool ExistsTrayIcon => _trayContainer.Components.Count > 0;
 
         public MainForm(string appPath, Func<CancellationToken, Task> startService)
         {
@@ -24,10 +27,48 @@ namespace TidyDesktopMonster
 
         void MainForm_Load(object sender, EventArgs e)
         {
+            SetServiceState(ServiceState.Stopped);
+        }
+
+        void SetServiceState(ServiceState state)
+        {
+            switch (state)
+            {
+                case ServiceState.Started:
+                    ToggleService.Enabled = true;
+                    ToggleService.Text = "Stop Tidying Desktop";
+                    ServiceStatusText.Text = "Service is running.";
+                    break;
+
+                case ServiceState.Stopping:
+                    ToggleService.Enabled = false;
+                    ToggleService.Text = "Stop Tidying Desktop";
+                    ServiceStatusText.Text = "Stopping the service.";
+                    break;
+
+                case ServiceState.Stopped:
+                    ToggleService.Enabled = true;
+                    ToggleService.Text = "Start Tidying Desktop";
+                    ServiceStatusText.Text = string.Empty;
+                    break;
+
+                default:
+                    throw new ArgumentException("Unhandled case", "state");
+            }
+        }
+
+        async Task RunStartService()
+        {
             CreateTrayIcon();
             CloseWindow();
+            SetServiceState(ServiceState.Started);
 
-            _startService(_serviceCts.Token);
+            await _startService(_serviceCts.Token);
+
+            _trayContainer.Dispose();
+            _trayContainer = new Container();
+
+            SetServiceState(ServiceState.Stopped);
         }
 
         void CreateTrayIcon()
@@ -40,12 +81,43 @@ namespace TidyDesktopMonster
                 Text = "Tidy Desktop Monster",
                 Visible = true,
             };
+            trayIcon.DoubleClick += (sender, evt) => OpenWindow();
 
             contextMenu.Items.Add(new ToolStripLabel("Desktop monitoring is active.")
             {
                 ForeColor = Color.DarkGray,
             });
+            contextMenu.Items.Add("Open Settings", null, (sender, evt) => OpenWindow());
             contextMenu.Items.Add("Exit", null, (sender, evt) => Close());
+        }
+
+        void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized && ExistsTrayIcon)
+                CloseWindow();
+        }
+
+        private void ToggleService_Click(object sender, EventArgs e)
+        {
+            if (_serviceTask.IsCompleted)
+            {
+                _serviceCts.Dispose();
+                _serviceCts = new CancellationTokenSource();
+                _serviceTask = RunStartService();
+            }
+            else
+            {
+                SetServiceState(ServiceState.Stopping);
+                _serviceCts.Cancel();
+            }
+        }
+
+        void OpenWindow()
+        {
+            Visible = true;
+            ShowInTaskbar = true;
+            WindowState = FormWindowState.Normal;
+            Activate();
         }
 
         void CloseWindow()
@@ -65,6 +137,13 @@ namespace TidyDesktopMonster
                 _trayContainer.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        enum ServiceState
+        {
+            Started,
+            Stopping,
+            Stopped,
         }
     }
 }
