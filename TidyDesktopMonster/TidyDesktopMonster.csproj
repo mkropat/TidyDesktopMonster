@@ -48,7 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppHelper\SingleInstanceGuard.cs" />
+    <Compile Include="AppHelper\StartupFolderRegistration.cs" />
     <Compile Include="Interface\CalculateRetryAfter.cs" />
+    <Compile Include="Interface\CreateShortcut.cs" />
+    <Compile Include="Interface\IStartupRegistration.cs" />
     <Compile Include="Interface\IUpdatingSubject.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -67,6 +70,7 @@
     <Compile Include="WinApi\Shell32\Shell32Delete.cs" />
     <Compile Include="WinApi\Shell32\ShellFileOptions.cs" />
     <Compile Include="WinApi\User32Messages.cs" />
+    <Compile Include="WinApi\WindowsScriptHostWrapper.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -92,6 +96,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary">
+      <Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

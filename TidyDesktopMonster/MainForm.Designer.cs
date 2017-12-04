@@ -19,6 +19,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.ToggleService = new System.Windows.Forms.Button();
             this.ServiceStatusText = new System.Windows.Forms.Label();
+            this.RunOnStartup = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -27,17 +28,19 @@
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.ToggleService, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.ServiceStatusText, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.ToggleService, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.ServiceStatusText, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.RunOnStartup, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 4;
+            this.tableLayoutPanel1.RowCount = 5;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(548, 189);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(548, 248);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // label1
@@ -58,7 +61,7 @@
             // 
             this.ToggleService.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.ToggleService.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ToggleService.Location = new System.Drawing.Point(126, 83);
+            this.ToggleService.Location = new System.Drawing.Point(126, 143);
             this.ToggleService.Name = "ToggleService";
             this.ToggleService.Size = new System.Drawing.Size(295, 60);
             this.ToggleService.TabIndex = 1;
@@ -71,17 +74,31 @@
             this.ServiceStatusText.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.ServiceStatusText.AutoSize = true;
             this.ServiceStatusText.ForeColor = System.Drawing.SystemColors.InfoText;
-            this.ServiceStatusText.Location = new System.Drawing.Point(202, 146);
+            this.ServiceStatusText.Location = new System.Drawing.Point(202, 206);
             this.ServiceStatusText.Name = "ServiceStatusText";
             this.ServiceStatusText.Size = new System.Drawing.Size(144, 20);
             this.ServiceStatusText.TabIndex = 2;
             this.ServiceStatusText.Text = "[service status text]";
             // 
+            // RunOnStartup
+            // 
+            this.RunOnStartup.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.RunOnStartup.AutoSize = true;
+            this.RunOnStartup.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RunOnStartup.Location = new System.Drawing.Point(186, 83);
+            this.RunOnStartup.Name = "RunOnStartup";
+            this.RunOnStartup.Padding = new System.Windows.Forms.Padding(0, 10, 0, 15);
+            this.RunOnStartup.Size = new System.Drawing.Size(175, 54);
+            this.RunOnStartup.TabIndex = 3;
+            this.RunOnStartup.Text = "Run on startup?";
+            this.RunOnStartup.UseVisualStyleBackColor = true;
+            this.RunOnStartup.CheckedChanged += new System.EventHandler(this.RunOnStartup_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(548, 189);
+            this.ClientSize = new System.Drawing.Size(548, 248);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "MainForm";
             this.Text = "Tidy Desktop Monster";
@@ -99,6 +116,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button ToggleService;
         private System.Windows.Forms.Label ServiceStatusText;
+        private System.Windows.Forms.CheckBox RunOnStartup;
     }
 }
 

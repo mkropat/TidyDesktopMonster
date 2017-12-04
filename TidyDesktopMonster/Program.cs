@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TidyDesktopMonster.AppHelper;
+using TidyDesktopMonster.Interface;
 using TidyDesktopMonster.Scheduling;
 using TidyDesktopMonster.WinApi;
 using TidyDesktopMonster.WinApi.Shell32;
@@ -13,6 +14,11 @@ namespace TidyDesktopMonster
     static class Program
     {
         static Assembly _appAssembly = typeof(Program).Assembly;
+
+        static string AppName { get; } = _appAssembly
+            .GetCustomAttribute<AssemblyTitleAttribute>()
+            .Title
+            .ToLowerInvariant();
 
         static string AppPath { get; } = _appAssembly.Location;
 
@@ -43,6 +49,7 @@ namespace TidyDesktopMonster
 
             var directoryToMonitor = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var retryLogic = new ExponentialBackoffLogic(min: TimeSpan.FromMilliseconds(10), max: TimeSpan.FromHours(1));
+            var startupRegistration = new StartupFolderRegistration(AppName, AppPath, new ShortcutOptions { Arguments = "-StartService" }, WindowsScriptHostWrapper.CreateShortcut);
 
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
             using (var subject = new FilesInDirectorySubject(directoryToMonitor, "*.lnk"))
@@ -52,7 +59,8 @@ namespace TidyDesktopMonster
                     showSettingsForm: !shouldStartService,
                     appPath: AppPath,
                     openWindowMessage: (int)User32Messages.GetMessage(openWindowMessage),
-                    startService: service.Run));
+                    startService: service.Run,
+                    startupRegistration: startupRegistration));
             }
         }
 

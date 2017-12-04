@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TidyDesktopMonster.Interface;
 
 namespace TidyDesktopMonster
 {
@@ -15,11 +16,12 @@ namespace TidyDesktopMonster
         Task _serviceTask = Task.FromResult<object>(null);
         readonly bool _showSettingsForm;
         readonly Func<CancellationToken, Task> _startService;
+        readonly IStartupRegistration _startupRegistration;
         Container _trayContainer = new Container();
 
         bool ExistsTrayIcon => _trayContainer.Components.Count > 0;
 
-        public MainForm(bool showSettingsForm, string appPath, int openWindowMessage, Func<CancellationToken, Task> startService)
+        public MainForm(bool showSettingsForm, string appPath, int openWindowMessage, Func<CancellationToken, Task> startService, IStartupRegistration startupRegistration)
         {
             InitializeComponent();
 
@@ -27,10 +29,13 @@ namespace TidyDesktopMonster
             _openWindowMessage = openWindowMessage;
             _showSettingsForm = showSettingsForm;
             _startService = startService;
+            _startupRegistration = startupRegistration;
         }
 
         void MainForm_Load(object sender, EventArgs e)
         {
+            RunOnStartup.Checked = _startupRegistration.RunOnStartup;
+
             SetServiceState(ServiceState.Stopped);
 
             if (!_showSettingsForm)
@@ -104,6 +109,12 @@ namespace TidyDesktopMonster
         {
             if (WindowState == FormWindowState.Minimized && ExistsTrayIcon)
                 CloseWindow();
+        }
+
+        void RunOnStartup_CheckedChanged(object sender, EventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            _startupRegistration.RunOnStartup = checkbox.Checked;
         }
 
         private void ToggleService_Click(object sender, EventArgs e)
