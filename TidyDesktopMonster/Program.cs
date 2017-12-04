@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -22,19 +23,21 @@ namespace TidyDesktopMonster
         const string openWindowMessage = "TD_OPENWINDOW";
 
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             using (var guard = new SingleInstanceGuard(ProgramId, SingleInstanceGuard.Scope.CurrentUser))
             {
                 if (guard.IsPrimaryInstance)
-                    RunApp();
+                    RunApp(args);
                 else
                     User32Messages.BroadcastMessage(openWindowMessage);
             }
         }
 
-        static void RunApp()
+        static void RunApp(string[] args)
         {
+            var shouldStartService = args.Any(x => "-StartService".Equals(x, StringComparison.InvariantCultureIgnoreCase));
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -46,7 +49,8 @@ namespace TidyDesktopMonster
             {
                 var service = new PerformActionOnUpdatingSubject<string>(subject, action: Shell32Delete.DeleteFile, scheduler: scheduler);
                 RunForm(new MainForm(
-                    AppPath,
+                    showSettingsForm: !shouldStartService,
+                    appPath: AppPath,
                     openWindowMessage: (int)User32Messages.GetMessage(openWindowMessage),
                     startService: service.Run));
             }

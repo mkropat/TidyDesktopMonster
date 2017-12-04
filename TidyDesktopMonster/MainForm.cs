@@ -13,23 +13,30 @@ namespace TidyDesktopMonster
         readonly int _openWindowMessage;
         CancellationTokenSource _serviceCts = new CancellationTokenSource();
         Task _serviceTask = Task.FromResult<object>(null);
+        readonly bool _showSettingsForm;
         readonly Func<CancellationToken, Task> _startService;
         Container _trayContainer = new Container();
 
         bool ExistsTrayIcon => _trayContainer.Components.Count > 0;
 
-        public MainForm(string appPath, int openWindowMessage, Func<CancellationToken, Task> startService)
+        public MainForm(bool showSettingsForm, string appPath, int openWindowMessage, Func<CancellationToken, Task> startService)
         {
             InitializeComponent();
 
             _appPath = appPath;
             _openWindowMessage = openWindowMessage;
+            _showSettingsForm = showSettingsForm;
             _startService = startService;
         }
 
         void MainForm_Load(object sender, EventArgs e)
         {
             SetServiceState(ServiceState.Stopped);
+
+            if (!_showSettingsForm)
+            {
+                var fireAndForgetTask = RunStartService();
+            }
         }
 
         void SetServiceState(ServiceState state)
