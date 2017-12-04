@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TidyDesktopMonster
@@ -8,19 +10,24 @@ namespace TidyDesktopMonster
     public partial class MainForm : Form
     {
         readonly string _appPath;
-        Container _trayContainer = new Container();
+        readonly CancellationTokenSource _serviceCts = new CancellationTokenSource();
+        readonly Func<CancellationToken, Task> _startService;
+        readonly Container _trayContainer = new Container();
 
-        public MainForm(string appPath)
+        public MainForm(string appPath, Func<CancellationToken, Task> startService)
         {
             InitializeComponent();
 
             _appPath = appPath;
+            _startService = startService;
         }
 
         void MainForm_Load(object sender, EventArgs e)
         {
             CreateTrayIcon();
             CloseWindow();
+
+            _startService(_serviceCts.Token);
         }
 
         void CreateTrayIcon()
@@ -53,6 +60,8 @@ namespace TidyDesktopMonster
             if (disposing)
             {
                 components?.Dispose();
+                _serviceCts.Cancel();
+                _serviceCts.Dispose();
                 _trayContainer.Dispose();
             }
             base.Dispose(disposing);
