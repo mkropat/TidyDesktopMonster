@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using TidyDesktopMonster.AppHelper;
 using TidyDesktopMonster.Scheduling;
 using TidyDesktopMonster.WinApi;
 using TidyDesktopMonster.WinApi.Shell32;
@@ -13,8 +15,21 @@ namespace TidyDesktopMonster
 
         static string AppPath { get; } = _appAssembly.Location;
 
+        static string ProgramId { get; } = _appAssembly
+            .GetCustomAttribute<GuidAttribute>()
+            .Value;
+
         [STAThread]
         static void Main()
+        {
+            using (var guard = new SingleInstanceGuard(ProgramId, SingleInstanceGuard.Scope.CurrentUser))
+            {
+                if (guard.IsPrimaryInstance)
+                    RunApp();
+            }
+        }
+
+        static void RunApp()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

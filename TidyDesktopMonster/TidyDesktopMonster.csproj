@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppHelper\SingleInstanceGuard.cs" />
     <Compile Include="Interface\CalculateRetryAfter.cs" />
     <Compile Include="Interface\IUpdatingSubject.cs" />
     <Compile Include="MainForm.cs">
