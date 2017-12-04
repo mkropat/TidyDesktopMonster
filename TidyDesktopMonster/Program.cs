@@ -19,6 +19,8 @@ namespace TidyDesktopMonster
             .GetCustomAttribute<GuidAttribute>()
             .Value;
 
+        const string openWindowMessage = "TD_OPENWINDOW";
+
         [STAThread]
         static void Main()
         {
@@ -26,6 +28,8 @@ namespace TidyDesktopMonster
             {
                 if (guard.IsPrimaryInstance)
                     RunApp();
+                else
+                    User32Messages.BroadcastMessage(openWindowMessage);
             }
         }
 
@@ -43,6 +47,7 @@ namespace TidyDesktopMonster
                 var service = new PerformActionOnUpdatingSubject<string>(subject, action: Shell32Delete.DeleteFile, scheduler: scheduler);
                 RunForm(new MainForm(
                     AppPath,
+                    openWindowMessage: (int)User32Messages.GetMessage(openWindowMessage),
                     startService: service.Run));
             }
         }

@@ -10,6 +10,7 @@ namespace TidyDesktopMonster
     public partial class MainForm : Form
     {
         readonly string _appPath;
+        readonly int _openWindowMessage;
         CancellationTokenSource _serviceCts = new CancellationTokenSource();
         Task _serviceTask = Task.FromResult<object>(null);
         readonly Func<CancellationToken, Task> _startService;
@@ -17,11 +18,12 @@ namespace TidyDesktopMonster
 
         bool ExistsTrayIcon => _trayContainer.Components.Count > 0;
 
-        public MainForm(string appPath, Func<CancellationToken, Task> startService)
+        public MainForm(string appPath, int openWindowMessage, Func<CancellationToken, Task> startService)
         {
             InitializeComponent();
 
             _appPath = appPath;
+            _openWindowMessage = openWindowMessage;
             _startService = startService;
         }
 
@@ -110,6 +112,14 @@ namespace TidyDesktopMonster
                 SetServiceState(ServiceState.Stopping);
                 _serviceCts.Cancel();
             }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == _openWindowMessage)
+                OpenWindow();
+
+            base.WndProc(ref m);
         }
 
         void OpenWindow()

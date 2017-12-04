@@ -66,6 +66,7 @@
     <Compile Include="WinApi\Shell32\FileOperationFlags.cs" />
     <Compile Include="WinApi\Shell32\Shell32Delete.cs" />
     <Compile Include="WinApi\Shell32\ShellFileOptions.cs" />
+    <Compile Include="WinApi\User32Messages.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
