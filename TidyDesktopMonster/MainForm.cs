@@ -14,6 +14,7 @@ namespace TidyDesktopMonster
         readonly int _openWindowMessage;
         CancellationTokenSource _serviceCts = new CancellationTokenSource();
         Task _serviceTask = Task.FromResult<object>(null);
+        readonly IKeyValueStore _settingsStore;
         readonly bool _showSettingsForm;
         readonly Func<CancellationToken, Task> _startService;
         readonly IStartupRegistration _startupRegistration;
@@ -21,12 +22,13 @@ namespace TidyDesktopMonster
 
         bool ExistsTrayIcon => _trayContainer.Components.Count > 0;
 
-        public MainForm(bool showSettingsForm, string appPath, int openWindowMessage, Func<CancellationToken, Task> startService, IStartupRegistration startupRegistration)
+        public MainForm(bool showSettingsForm, string appPath, int openWindowMessage, IKeyValueStore settingsStore, Func<CancellationToken, Task> startService, IStartupRegistration startupRegistration)
         {
             InitializeComponent();
 
             _appPath = appPath;
             _openWindowMessage = openWindowMessage;
+            _settingsStore = settingsStore;
             _showSettingsForm = showSettingsForm;
             _startService = startService;
             _startupRegistration = startupRegistration;
@@ -34,6 +36,7 @@ namespace TidyDesktopMonster
 
         void MainForm_Load(object sender, EventArgs e)
         {
+            TidyAllUsers.Checked = _settingsStore.Read<bool?>("TidyAllUsers") ?? true;
             RunOnStartup.Checked = _startupRegistration.RunOnStartup;
 
             SetServiceState(ServiceState.Stopped);
@@ -49,18 +52,21 @@ namespace TidyDesktopMonster
             switch (state)
             {
                 case ServiceState.Started:
+                    TidyAllUsers.Enabled = false;
                     ToggleService.Enabled = true;
                     ToggleService.Text = "Stop Tidying Desktop";
                     ServiceStatusText.Text = "Service is running.";
                     break;
 
                 case ServiceState.Stopping:
+                    TidyAllUsers.Enabled = false;
                     ToggleService.Enabled = false;
                     ToggleService.Text = "Stop Tidying Desktop";
                     ServiceStatusText.Text = "Stopping the service.";
                     break;
 
                 case ServiceState.Stopped:
+                    TidyAllUsers.Enabled = true;
                     ToggleService.Enabled = true;
                     ToggleService.Text = "Start Tidying Desktop";
                     ServiceStatusText.Text = string.Empty;
@@ -109,6 +115,12 @@ namespace TidyDesktopMonster
         {
             if (WindowState == FormWindowState.Minimized && ExistsTrayIcon)
                 CloseWindow();
+        }
+
+        void TidyAllUsers_CheckedChanged(object sender, EventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            _settingsStore.Write("TidyAllUsers", checkbox.Checked);
         }
 
         void RunOnStartup_CheckedChanged(object sender, EventArgs e)

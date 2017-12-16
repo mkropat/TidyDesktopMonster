@@ -49,6 +49,7 @@ namespace TidyDesktopMonster
 
             var directoryToMonitor = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var retryLogic = new ExponentialBackoffLogic(min: TimeSpan.FromMilliseconds(10), max: TimeSpan.FromHours(1));
+            var settingsStore = new RegistryKeyValueStore("TidyDesktopMonster");
             var startupRegistration = new StartupFolderRegistration(AppName, AppPath, new ShortcutOptions { Arguments = "-StartService" }, WindowsScriptHostWrapper.CreateShortcut);
 
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
@@ -59,6 +60,7 @@ namespace TidyDesktopMonster
                     showSettingsForm: !shouldStartService,
                     appPath: AppPath,
                     openWindowMessage: (int)User32Messages.GetMessage(openWindowMessage),
+                    settingsStore: settingsStore,
                     startService: service.Run,
                     startupRegistration: startupRegistration));
             }
