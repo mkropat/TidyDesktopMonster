@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TidyDesktopMonster.Interface
 {
-    internal interface IUpdatingSubject<T>
+    internal interface IUpdatingSubject<T> : IDisposable
     {
         event EventHandler SubjectChanged;
         void StartWatching();

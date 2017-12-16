@@ -5,7 +5,7 @@ using TidyDesktopMonster.Interface;
 
 namespace TidyDesktopMonster.WinApi
 {
-    internal sealed class FilesInDirectorySubject : IUpdatingSubject<string>, IDisposable
+    internal sealed class FilesInDirectorySubject : IUpdatingSubject<string>
     {
         readonly string _directory;
         readonly string _pattern;

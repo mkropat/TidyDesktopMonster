@@ -10,25 +10,34 @@ namespace TidyDesktopMonster
     {
         readonly Action<T> _action;
         readonly WorkScheduler _scheduler;
-        readonly IUpdatingSubject<T> _subject;
+        readonly Func<IUpdatingSubject<T>> _subjectFactory;
 
-        public PerformActionOnUpdatingSubject(IUpdatingSubject<T> subject, Action<T> action, WorkScheduler scheduler)
+        public PerformActionOnUpdatingSubject(Func<IUpdatingSubject<T>> subjectFactory, Action<T> action, WorkScheduler scheduler)
         {
             _action = action;
             _scheduler = scheduler;
-            _subject = subject;
+            _subjectFactory = subjectFactory;
         }
 
         public async Task Run(CancellationToken cancelToken)
         {
-            _subject.SubjectChanged += (obj, evt) => _scheduler.RunNow();
-            _subject.StartWatching();
+            using (var subject = _subjectFactory())
+            {
+                await Run(cancelToken, subject)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        async Task Run(CancellationToken cancelToken, IUpdatingSubject<T> subject)
+        {
+            subject.SubjectChanged += (obj, evt) => _scheduler.RunNow();
+            subject.StartWatching();
 
             var cancelTask = TaskFromCancellationToken(cancelToken);
 
             while (!cancelTask.IsCanceled)
             {
-                foreach (var x in _subject.GetSubjects())
+                foreach (var x in subject.GetSubjects())
                 {
                     try
                     {

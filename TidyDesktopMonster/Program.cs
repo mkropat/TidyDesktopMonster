@@ -47,15 +47,17 @@ namespace TidyDesktopMonster
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var directoryToMonitor = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var retryLogic = new ExponentialBackoffLogic(min: TimeSpan.FromMilliseconds(10), max: TimeSpan.FromHours(1));
             var settingsStore = new RegistryKeyValueStore("TidyDesktopMonster");
             var startupRegistration = new StartupFolderRegistration(AppName, AppPath, new ShortcutOptions { Arguments = "-StartService" }, WindowsScriptHostWrapper.CreateShortcut);
 
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
-            using (var subject = new FilesInDirectorySubject(directoryToMonitor, "*.lnk"))
             {
-                var service = new PerformActionOnUpdatingSubject<string>(subject, action: Shell32Delete.DeleteFile, scheduler: scheduler);
+                var service = new PerformActionOnUpdatingSubject<string>(
+                    subjectFactory: () => CreateSubject(settingsStore),
+                    action: Shell32Delete.DeleteFile,
+                    scheduler: scheduler);
+
                 RunForm(new MainForm(
                     showSettingsForm: !shouldStartService,
                     appPath: AppPath,
@@ -64,6 +66,12 @@ namespace TidyDesktopMonster
                     startService: service.Run,
                     startupRegistration: startupRegistration));
             }
+        }
+
+        static IUpdatingSubject<string> CreateSubject(IKeyValueStore settingsStore)
+        {
+            var directoryToMonitor = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            return new FilesInDirectorySubject(directoryToMonitor, "*.lnk");
         }
 
         static void RunForm(Form form)
