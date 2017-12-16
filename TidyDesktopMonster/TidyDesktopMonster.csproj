@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="AppHelper\SingleInstanceGuard.cs" />
     <Compile Include="AppHelper\StartupFolderRegistration.cs" />
+    <Compile Include="CompositeSubject.cs" />
     <Compile Include="Interface\CalculateRetryAfter.cs" />
     <Compile Include="Interface\CreateShortcut.cs" />
     <Compile Include="Interface\IKeyValueStore.cs" />

@@ -70,8 +70,16 @@ namespace TidyDesktopMonster
 
         static IUpdatingSubject<string> CreateSubject(IKeyValueStore settingsStore)
         {
-            var directoryToMonitor = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            return new FilesInDirectorySubject(directoryToMonitor, "*.lnk");
+            var allUsersDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
+            var currentUserDesktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            return settingsStore.Read<bool?>("TidyAllUsers") == true
+                ? (IUpdatingSubject<string>)new CompositeSubject<string>(new[]
+                {
+                    new FilesInDirectorySubject(allUsersDesktop, "*.lnk"),
+                    new FilesInDirectorySubject(currentUserDesktop, "*.lnk"),
+
+                })
+                : new FilesInDirectorySubject(currentUserDesktop, "*.lnk");
         }
 
         static void RunForm(Form form)
