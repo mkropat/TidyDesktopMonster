@@ -18,8 +18,7 @@ namespace TidyDesktopMonster
 
         static string AppName { get; } = _appAssembly
             .GetCustomAttribute<AssemblyTitleAttribute>()
-            .Title
-            .ToLowerInvariant();
+            .Title;
 
         static string AppPath { get; } = _appAssembly.Location;
 
@@ -31,8 +30,6 @@ namespace TidyDesktopMonster
             ?.Split(';')
             ?? new string[0];
 
-        const string openWindowMessage = "TD_OPENWINDOW";
-
         [STAThread]
         static void Main(string[] args)
         {
@@ -41,7 +38,7 @@ namespace TidyDesktopMonster
                 if (guard.IsPrimaryInstance)
                     RunApp(args);
                 else
-                    User32Messages.BroadcastMessage(openWindowMessage);
+                    User32Messages.BroadcastMessage(Constants.OpenWindowMessage);
             }
         }
 
@@ -53,8 +50,11 @@ namespace TidyDesktopMonster
             Application.SetCompatibleTextRenderingDefault(false);
 
             var retryLogic = new ExponentialBackoffLogic(min: TimeSpan.FromMilliseconds(10), max: TimeSpan.FromHours(1));
-            var settingsStore = new RegistryKeyValueStore("TidyDesktopMonster");
-            var startupRegistration = new StartupFolderRegistration(AppName, new ShortcutOptions { Arguments = "-StartService", Target = AppPath }, WindowsScriptHostWrapper.CreateShortcut);
+            var settingsStore = new RegistryKeyValueStore(AppName);
+            var startupRegistration = new StartupFolderRegistration(
+                AppName.ToLowerInvariant(),
+                new ShortcutOptions { Arguments = "-StartService", Target = AppPath },
+                WindowsScriptHostWrapper.CreateShortcut);
 
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
             {
@@ -66,7 +66,7 @@ namespace TidyDesktopMonster
                 RunForm(new MainForm(
                     showSettingsForm: !shouldStartService,
                     appPath: AppPath,
-                    openWindowMessage: (int)User32Messages.GetMessage(openWindowMessage),
+                    openWindowMessage: (int)User32Messages.GetMessage(Constants.OpenWindowMessage),
                     settingsStore: settingsStore,
                     startService: service.Run,
                     startupRegistration: startupRegistration));
@@ -75,7 +75,7 @@ namespace TidyDesktopMonster
 
         static IUpdatingSubject<string> CreateSubject(IKeyValueStore settingsStore)
         {
-            var filter = settingsStore.Read<ShortcutFilterType?>("ShortcutFilter");
+            var filter = settingsStore.Read<ShortcutFilterType?>(Constants.ShortcutFilterSetting);
             switch (filter)
             {
                 case ShortcutFilterType.Apps:
@@ -93,7 +93,7 @@ namespace TidyDesktopMonster
             var currentUserDesktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var searchPattern = "*.lnk";
 
-            return settingsStore.Read<bool?>("TidyAllUsers") == true
+            return settingsStore.Read<bool?>(Constants.TidyAllUsersSetting) == true
                 ? (IUpdatingSubject<string>)new CompositeSubject<string>(new[]
                 {
                     new FilesInDirectorySubject(allUsersDesktop, searchPattern),

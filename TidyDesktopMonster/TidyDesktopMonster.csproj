@@ -52,6 +52,7 @@
     <Compile Include="AppHelper\SingleInstanceGuard.cs" />
     <Compile Include="AppHelper\StartupFolderRegistration.cs" />
     <Compile Include="CompositeSubject.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="FilteringSubject.cs" />
     <Compile Include="Interface\CalculateRetryAfter.cs" />
     <Compile Include="Interface\Shortcut.cs" />

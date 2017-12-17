@@ -36,10 +36,10 @@ namespace TidyDesktopMonster
 
         void MainForm_Load(object sender, EventArgs e)
         {
-            TidyAllUsers.Checked = _settingsStore.Read<bool?>("TidyAllUsers") ?? true;
+            TidyAllUsers.Checked = _settingsStore.Read<bool?>(Constants.TidyAllUsersSetting) ?? true;
             RunOnStartup.Checked = _startupRegistration.RunOnStartup;
 
-            var initialSetting = _settingsStore.Read<ShortcutFilterType?>("ShortcutFilter") ?? ShortcutFilterType.Apps;
+            var initialSetting = _settingsStore.Read<ShortcutFilterType?>(Constants.ShortcutFilterSetting) ?? ShortcutFilterType.Apps;
 
             ShortcutFilter.ValueMember = "Item1";
             ShortcutFilter.DisplayMember = "Item2";
@@ -135,7 +135,7 @@ namespace TidyDesktopMonster
         void TidyAllUsers_CheckedChanged(object sender, EventArgs e)
         {
             var checkbox = (CheckBox)sender;
-            _settingsStore.Write("TidyAllUsers", checkbox.Checked);
+            _settingsStore.Write(Constants.TidyAllUsersSetting, checkbox.Checked);
         }
 
         void RunOnStartup_CheckedChanged(object sender, EventArgs e)
@@ -148,7 +148,7 @@ namespace TidyDesktopMonster
         {
             var comboBox = (ComboBox)sender;
             var type = (ShortcutFilterType)comboBox.SelectedValue;
-            _settingsStore.Write("ShortcutFilter", type);
+            _settingsStore.Write(Constants.ShortcutFilterSetting, type);
         }
 
         void ToggleService_Click(object sender, EventArgs e)
