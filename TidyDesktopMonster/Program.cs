@@ -50,7 +50,7 @@ namespace TidyDesktopMonster
             Application.SetCompatibleTextRenderingDefault(false);
 
             var retryLogic = new ExponentialBackoffLogic(min: TimeSpan.FromMilliseconds(10), max: TimeSpan.FromHours(1));
-            var settingsStore = new RegistryKeyValueStore(AppName);
+            var settingsStore = new InMemoryKeyValueCache(new RegistryKeyValueStore(AppName));
             var startupRegistration = new StartupFolderRegistration(
                 AppName.ToLowerInvariant(),
                 new ShortcutOptions { Arguments = "-StartService", Target = AppPath },

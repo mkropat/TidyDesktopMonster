@@ -39,8 +39,6 @@ namespace TidyDesktopMonster
             TidyAllUsers.Checked = _settingsStore.Read<bool?>(Constants.TidyAllUsersSetting) ?? true;
             RunOnStartup.Checked = _startupRegistration.RunOnStartup;
 
-            var initialSetting = _settingsStore.Read<ShortcutFilterType?>(Constants.ShortcutFilterSetting) ?? ShortcutFilterType.Apps;
-
             ShortcutFilter.ValueMember = "Item1";
             ShortcutFilter.DisplayMember = "Item2";
             ShortcutFilter.DataSource = new[]
@@ -49,7 +47,8 @@ namespace TidyDesktopMonster
                 Tuple.Create(ShortcutFilterType.Apps, "App Shortcuts"),
             };
 
-            ShortcutFilter.SelectedValue = initialSetting;
+            ShortcutFilter.SelectedValue = _settingsStore.Read<ShortcutFilterType?>(Constants.ShortcutFilterSetting) ?? ShortcutFilterType.Apps;
+            ShortcutFilter.SelectedIndexChanged += ShortcutFilter_SelectedIndexChanged;
 
             SetServiceState(ServiceState.Stopped);
 

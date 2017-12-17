@@ -70,7 +70,7 @@
             // 
             this.ToggleService.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.ToggleService.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ToggleService.Location = new System.Drawing.Point(126, 226);
+            this.ToggleService.Location = new System.Drawing.Point(126, 231);
             this.ToggleService.Name = "ToggleService";
             this.ToggleService.Size = new System.Drawing.Size(296, 60);
             this.ToggleService.TabIndex = 1;
@@ -83,7 +83,7 @@
             this.ServiceStatusText.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.ServiceStatusText.AutoSize = true;
             this.ServiceStatusText.ForeColor = System.Drawing.SystemColors.InfoText;
-            this.ServiceStatusText.Location = new System.Drawing.Point(202, 289);
+            this.ServiceStatusText.Location = new System.Drawing.Point(202, 294);
             this.ServiceStatusText.Name = "ServiceStatusText";
             this.ServiceStatusText.Size = new System.Drawing.Size(144, 20);
             this.ServiceStatusText.TabIndex = 2;
@@ -126,7 +126,7 @@
             this.flowLayoutPanel1.Location = new System.Drawing.Point(122, 166);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 20);
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(304, 54);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(304, 59);
             this.flowLayoutPanel1.TabIndex = 5;
             // 
             // label2
@@ -134,7 +134,7 @@
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(3, 4);
+            this.label2.Location = new System.Drawing.Point(3, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(74, 25);
             this.label2.TabIndex = 0;
@@ -149,7 +149,6 @@
             this.ShortcutFilter.Name = "ShortcutFilter";
             this.ShortcutFilter.Size = new System.Drawing.Size(218, 33);
             this.ShortcutFilter.TabIndex = 1;
-            this.ShortcutFilter.SelectedIndexChanged += new System.EventHandler(this.ShortcutFilter_SelectedIndexChanged);
             // 
             // MainForm
             // 
