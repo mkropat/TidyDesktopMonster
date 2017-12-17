@@ -9,7 +9,7 @@ namespace TidyDesktopMonster
     {
         readonly IEnumerable<IUpdatingSubject<T>> _subjects;
 
-        public event EventHandler SubjectChanged;
+        public event EventHandler SubjectChanged = delegate { };
 
         public CompositeSubject(IEnumerable<IUpdatingSubject<T>> subjects)
         {
@@ -21,7 +21,9 @@ namespace TidyDesktopMonster
 
         public IEnumerable<T> GetSubjects()
         {
-            return _subjects.SelectMany(x => x.GetSubjects());
+            return _subjects
+                .SelectMany(x => x.GetSubjects())
+                .ToArray();
         }
 
         public void StartWatching()

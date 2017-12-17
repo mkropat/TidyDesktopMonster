@@ -34,7 +34,7 @@ namespace TidyDesktopMonster.WinApi
             };
         }
 
-        public event EventHandler SubjectChanged;
+        public event EventHandler SubjectChanged = delegate { };
 
         public IEnumerable<string> GetSubjects()
         {
