@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -25,6 +26,10 @@ namespace TidyDesktopMonster
         static string ProgramId { get; } = _appAssembly
             .GetCustomAttribute<GuidAttribute>()
             .Value;
+
+        static string[] ApplicationExtensions { get; } = Environment.GetEnvironmentVariable("PATHEXT")
+            ?.Split(';')
+            ?? new string[0];
 
         const string openWindowMessage = "TD_OPENWINDOW";
 
@@ -70,6 +75,20 @@ namespace TidyDesktopMonster
 
         static IUpdatingSubject<string> CreateSubject(IKeyValueStore settingsStore)
         {
+            var filter = settingsStore.Read<ShortcutFilterType?>("ShortcutFilter");
+            switch (filter)
+            {
+                case ShortcutFilterType.Apps:
+                    return new FilteringSubject<string>(
+                        CreateDirectoryWatcher(settingsStore),
+                        path => PathHasExtension(Shell32Wrapper.TryReadShortcut(path).Target, ApplicationExtensions));
+                default:
+                    return CreateDirectoryWatcher(settingsStore);
+            }
+        }
+
+        static IUpdatingSubject<string> CreateDirectoryWatcher(IKeyValueStore settingsStore)
+        {
             var allUsersDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
             var currentUserDesktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var searchPattern = "*.lnk";
@@ -82,6 +101,11 @@ namespace TidyDesktopMonster
 
                 })
                 : new FilesInDirectorySubject(currentUserDesktop, searchPattern);
+        }
+
+        static bool PathHasExtension(string path, string[] extensions)
+        {
+            return extensions.Contains(Path.GetExtension(path), StringComparer.InvariantCultureIgnoreCase);
         }
 
         static void RunForm(Form form)

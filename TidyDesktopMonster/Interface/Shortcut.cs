@@ -2,6 +2,8 @@
 {
     internal delegate void CreateShortcut(string lnkPath, ShortcutOptions options);
 
+    internal delegate ShortcutOptions ReadShortcut(string lnkPath);
+
     internal class ShortcutOptions
     {
         public string Arguments { get; set; }

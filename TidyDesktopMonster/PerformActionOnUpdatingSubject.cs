@@ -49,8 +49,7 @@ namespace TidyDesktopMonster
                     }
                 }
 
-                await Task.WhenAny(_scheduler.WaitForWork(), cancelTask)
-                    .ConfigureAwait(false);
+                await Task.WhenAny(_scheduler.WaitForWork(), cancelTask);
             }
         }
 
