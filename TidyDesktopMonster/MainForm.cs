@@ -39,6 +39,18 @@ namespace TidyDesktopMonster
             TidyAllUsers.Checked = _settingsStore.Read<bool?>("TidyAllUsers") ?? true;
             RunOnStartup.Checked = _startupRegistration.RunOnStartup;
 
+            var initialSetting = _settingsStore.Read<ShortcutFilterType?>("ShortcutFilter") ?? ShortcutFilterType.Apps;
+
+            ShortcutFilter.ValueMember = "Item1";
+            ShortcutFilter.DisplayMember = "Item2";
+            ShortcutFilter.DataSource = new[]
+            {
+                Tuple.Create(ShortcutFilterType.All, "All Shortcuts"),
+                Tuple.Create(ShortcutFilterType.Apps, "App Shortcuts"),
+            };
+
+            ShortcutFilter.SelectedValue = initialSetting;
+
             SetServiceState(ServiceState.Stopped);
 
             if (!_showSettingsForm)
@@ -52,6 +64,7 @@ namespace TidyDesktopMonster
             switch (state)
             {
                 case ServiceState.Started:
+                    ShortcutFilter.Enabled = false;
                     TidyAllUsers.Enabled = false;
                     ToggleService.Enabled = true;
                     ToggleService.Text = "Stop Tidying Desktop";
@@ -59,6 +72,7 @@ namespace TidyDesktopMonster
                     break;
 
                 case ServiceState.Stopping:
+                    ShortcutFilter.Enabled = false;
                     TidyAllUsers.Enabled = false;
                     ToggleService.Enabled = false;
                     ToggleService.Text = "Stop Tidying Desktop";
@@ -66,6 +80,7 @@ namespace TidyDesktopMonster
                     break;
 
                 case ServiceState.Stopped:
+                    ShortcutFilter.Enabled = true;
                     TidyAllUsers.Enabled = true;
                     ToggleService.Enabled = true;
                     ToggleService.Text = "Start Tidying Desktop";
@@ -129,7 +144,14 @@ namespace TidyDesktopMonster
             _startupRegistration.RunOnStartup = checkbox.Checked;
         }
 
-        private void ToggleService_Click(object sender, EventArgs e)
+        void ShortcutFilter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var comboBox = (ComboBox)sender;
+            var type = (ShortcutFilterType)comboBox.SelectedValue;
+            _settingsStore.Write("ShortcutFilter", type);
+        }
+
+        void ToggleService_Click(object sender, EventArgs e)
         {
             if (_serviceTask.IsCompleted)
             {

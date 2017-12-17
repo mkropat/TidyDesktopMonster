@@ -57,6 +57,7 @@
     <Compile Include="Interface\IKeyValueStore.cs" />
     <Compile Include="Interface\IStartupRegistration.cs" />
     <Compile Include="Interface\IUpdatingSubject.cs" />
+    <Compile Include="Interface\ShortcutFilterType.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

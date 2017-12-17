@@ -35,9 +35,15 @@ namespace TidyDesktopMonster.WinApi
             var targetType = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)
                 ? Nullable.GetUnderlyingType(type)
                 : type;
-            return value == null
-                ? default
-                : (T)Convert.ChangeType(value, targetType);
+
+            if (value == null)
+                return default;
+            else if (targetType.IsEnum)
+                return Enum.IsDefined(targetType, value)
+                    ? (T)Enum.Parse(targetType, value as string)
+                    : default;
+            else
+                return (T)Convert.ChangeType(value, targetType);
         }
 
         public void Write<T>(string key, T value)
