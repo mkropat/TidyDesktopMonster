@@ -49,7 +49,7 @@ namespace TidyDesktopMonster
 
             var retryLogic = new ExponentialBackoffLogic(min: TimeSpan.FromMilliseconds(10), max: TimeSpan.FromHours(1));
             var settingsStore = new RegistryKeyValueStore("TidyDesktopMonster");
-            var startupRegistration = new StartupFolderRegistration(AppName, AppPath, new ShortcutOptions { Arguments = "-StartService" }, WindowsScriptHostWrapper.CreateShortcut);
+            var startupRegistration = new StartupFolderRegistration(AppName, new ShortcutOptions { Arguments = "-StartService", Target = AppPath }, WindowsScriptHostWrapper.CreateShortcut);
 
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
             {

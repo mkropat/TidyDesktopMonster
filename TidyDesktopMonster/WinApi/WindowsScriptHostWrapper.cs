@@ -6,7 +6,7 @@ namespace TidyDesktopMonster.WinApi
 {
     internal static class WindowsScriptHostWrapper
     {
-        public static void CreateShortcut(string lnkPath, string targetPath, ShortcutOptions options = null)
+        public static void CreateShortcut(string lnkPath, ShortcutOptions options)
         {
             options = options ?? new ShortcutOptions();
 
@@ -15,7 +15,7 @@ namespace TidyDesktopMonster.WinApi
             shortcut.Arguments = options.Arguments;
             shortcut.Description = options.Description;
             shortcut.Hotkey = options.Hotkey ?? string.Empty;
-            shortcut.TargetPath = targetPath;
+            shortcut.TargetPath = Path.GetFullPath(options.Target);
             shortcut.WorkingDirectory = options.WorkingDirectory;
 
             shortcut.Save();

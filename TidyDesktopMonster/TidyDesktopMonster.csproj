@@ -53,7 +53,7 @@
     <Compile Include="AppHelper\StartupFolderRegistration.cs" />
     <Compile Include="CompositeSubject.cs" />
     <Compile Include="Interface\CalculateRetryAfter.cs" />
-    <Compile Include="Interface\CreateShortcut.cs" />
+    <Compile Include="Interface\Shortcut.cs" />
     <Compile Include="Interface\IKeyValueStore.cs" />
     <Compile Include="Interface\IStartupRegistration.cs" />
     <Compile Include="Interface\IUpdatingSubject.cs" />
