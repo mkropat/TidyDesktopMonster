@@ -72,14 +72,16 @@ namespace TidyDesktopMonster
         {
             var allUsersDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
             var currentUserDesktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var searchPattern = "*.lnk";
+
             return settingsStore.Read<bool?>("TidyAllUsers") == true
                 ? (IUpdatingSubject<string>)new CompositeSubject<string>(new[]
                 {
-                    new FilesInDirectorySubject(allUsersDesktop, "*.lnk"),
-                    new FilesInDirectorySubject(currentUserDesktop, "*.lnk"),
+                    new FilesInDirectorySubject(allUsersDesktop, searchPattern),
+                    new FilesInDirectorySubject(currentUserDesktop, searchPattern),
 
                 })
-                : new FilesInDirectorySubject(currentUserDesktop, "*.lnk");
+                : new FilesInDirectorySubject(currentUserDesktop, searchPattern);
         }
 
         static void RunForm(Form form)
