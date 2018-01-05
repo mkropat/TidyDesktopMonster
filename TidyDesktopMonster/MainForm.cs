@@ -175,6 +175,7 @@ namespace TidyDesktopMonster
 
         void OpenWindow()
         {
+            TopLevel = true;
             Visible = true;
             ShowInTaskbar = true;
             WindowState = FormWindowState.Normal;
@@ -186,6 +187,7 @@ namespace TidyDesktopMonster
             WindowState = FormWindowState.Minimized;
             Visible = false;
             ShowInTaskbar = false;
+            TopLevel = false;
         }
 
         protected override void Dispose(bool disposing)
