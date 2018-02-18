@@ -54,7 +54,7 @@ namespace TidyDesktopMonster
 
             if (!_showSettingsForm)
             {
-                var fireAndForgetTask = RunStartService();
+                _serviceTask = RunStartService();
             }
         }
 
