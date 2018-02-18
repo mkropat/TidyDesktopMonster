@@ -58,7 +58,7 @@ namespace TidyDesktopMonster
             }
         }
 
-        void SetServiceState(ServiceState state)
+        void SetServiceState(ServiceState state, string statusMessage="")
         {
             switch (state)
             {
@@ -67,6 +67,7 @@ namespace TidyDesktopMonster
                     TidyAllUsers.Enabled = false;
                     ToggleService.Enabled = true;
                     ToggleService.Text = "Stop Tidying Desktop";
+                    ServiceStatusText.ForeColor = SystemColors.WindowText;
                     ServiceStatusText.Text = "Service is running.";
                     break;
 
@@ -75,6 +76,7 @@ namespace TidyDesktopMonster
                     TidyAllUsers.Enabled = false;
                     ToggleService.Enabled = false;
                     ToggleService.Text = "Stop Tidying Desktop";
+                    ServiceStatusText.ForeColor = SystemColors.WindowText;
                     ServiceStatusText.Text = "Stopping the service.";
                     break;
 
@@ -83,7 +85,17 @@ namespace TidyDesktopMonster
                     TidyAllUsers.Enabled = true;
                     ToggleService.Enabled = true;
                     ToggleService.Text = "Start Tidying Desktop";
-                    ServiceStatusText.Text = string.Empty;
+                    ServiceStatusText.ForeColor = SystemColors.WindowText;
+                    ServiceStatusText.Text = statusMessage;
+                    break;
+
+                case ServiceState.Errored:
+                    ShortcutFilter.Enabled = true;
+                    TidyAllUsers.Enabled = true;
+                    ToggleService.Enabled = true;
+                    ToggleService.Text = "Start Tidying Desktop";
+                    ServiceStatusText.ForeColor = Color.Red;
+                    ServiceStatusText.Text = statusMessage;
                     break;
 
                 default:
@@ -97,12 +109,22 @@ namespace TidyDesktopMonster
             CloseWindow();
             SetServiceState(ServiceState.Started);
 
-            await _startService(_serviceCts.Token);
+            try
+            {
+                await _startService(_serviceCts.Token);
+
+                SetServiceState(ServiceState.Stopped);
+            }
+            catch (Exception ex)
+            {
+                SetServiceState(ServiceState.Errored, ex.Message);
+            }
+
+            if (IsInBackground)
+                OpenWindow();
 
             _trayContainer.Dispose();
             _trayContainer = new Container();
-
-            SetServiceState(ServiceState.Stopped);
         }
 
         void CreateTrayIcon()
@@ -119,7 +141,7 @@ namespace TidyDesktopMonster
 
             contextMenu.Items.Add(new ToolStripLabel("Desktop monitoring is active.")
             {
-                ForeColor = Color.DarkGray,
+                ForeColor = SystemColors.GrayText,
             });
             contextMenu.Items.Add("Open Settings", null, (sender, evt) => OpenWindow());
             contextMenu.Items.Add("Exit", null, (sender, evt) => Close());
@@ -173,6 +195,8 @@ namespace TidyDesktopMonster
             base.WndProc(ref m);
         }
 
+        bool IsInBackground => !TopLevel;
+
         void OpenWindow()
         {
             TopLevel = true;
@@ -207,6 +231,7 @@ namespace TidyDesktopMonster
             Started,
             Stopping,
             Stopped,
+            Errored,
         }
     }
 }
