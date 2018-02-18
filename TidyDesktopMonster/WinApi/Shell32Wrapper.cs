@@ -21,17 +21,5 @@ namespace TidyDesktopMonster.WinApi
                 WorkingDirectory = link.WorkingDirectory,
             };
         }
-
-        public static ShortcutOptions TryReadShortcut(string lnkPath)
-        {
-            try
-            {
-                return ReadShortcut(lnkPath);
-            }
-            catch
-            {
-                return new ShortcutOptions();
-            }
-        }
     }
 }

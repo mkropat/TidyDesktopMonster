@@ -81,7 +81,7 @@ namespace TidyDesktopMonster
                 case ShortcutFilterType.Apps:
                     return new FilteringSubject<string>(
                         CreateDirectoryWatcher(settingsStore),
-                        path => PathHasExtension(Shell32Wrapper.TryReadShortcut(path).Target, ApplicationExtensions));
+                        path => PathHasExtension(Shell32Wrapper.ReadShortcut(path).Target, ApplicationExtensions));
                 default:
                     return CreateDirectoryWatcher(settingsStore);
             }

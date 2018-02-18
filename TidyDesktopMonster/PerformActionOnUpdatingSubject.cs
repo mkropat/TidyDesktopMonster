@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TidyDesktopMonster.Interface;
@@ -37,7 +38,17 @@ namespace TidyDesktopMonster
 
             while (!cancelTask.IsCanceled)
             {
-                foreach (var x in subject.GetSubjects())
+                var subjects = Enumerable.Empty<T>();
+                try
+                {
+                    subjects = subject.GetSubjects();
+                }
+                catch
+                {
+                    _scheduler.RunAfterBackoff();
+                }
+
+                foreach (var x in subjects)
                 {
                     try
                     {
