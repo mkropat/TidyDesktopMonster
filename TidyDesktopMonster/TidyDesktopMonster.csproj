@@ -79,6 +79,7 @@
     <Compile Include="WinApi\Shell32\FileOperationFlags.cs" />
     <Compile Include="WinApi\Shell32\Shell32Delete.cs" />
     <Compile Include="WinApi\Shell32\ShellFileOptions.cs" />
+    <Compile Include="WinApi\ShellifyWrapper.cs" />
     <Compile Include="WinApi\User32Messages.cs" />
     <Compile Include="WinApi\WindowsScriptHostWrapper.cs" />
     <EmbeddedResource Include="MainForm.resx">
@@ -126,6 +127,12 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Shellify\ShellifyLib\ShellifyLib.csproj">
+      <Project>{96bdf0a5-ce59-4f15-a809-4b086b2120af}</Project>
+      <Name>ShellifyLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,0 +1,3 @@
+[submodule "Shellify"]
+	path = Shellify
+	url = https://github.com/mkropat/Shellify.git
