@@ -95,6 +95,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -135,4 +136,12 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <ILMergeConsolePath>$(SolutionDir)packages\ILMerge.2.14.1208\tools\ILMerge.exe</ILMergeConsolePath>
+    <BinOutputDir>$(SolutionDir)Bin\$(Configuration)\</BinOutputDir>
+  </PropertyGroup>
+  <Target Name="ILMerge" AfterTargets="Build">
+    <MakeDir Directories="$(BinOutputDir)" />
+    <Exec Command="$(ILMergeConsolePath) /out:$(BinOutputDir)TidyDesktopMonster.exe $(TargetDir)TidyDesktopMonster.exe $(TargetDir)ShellifyLib.dll" />
+  </Target>
 </Project>
