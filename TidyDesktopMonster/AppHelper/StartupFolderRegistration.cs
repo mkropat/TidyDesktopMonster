@@ -9,12 +9,14 @@ namespace TidyDesktopMonster.AppHelper
         readonly string _appName;
         readonly CreateShortcut _createShortcut;
         readonly ShortcutOptions _options;
+        readonly ReadShortcut _readShortcut;
 
-        public StartupFolderRegistration(string appName, ShortcutOptions options, CreateShortcut createShortcut)
+        public StartupFolderRegistration(string appName, ShortcutOptions options, CreateShortcut createShortcut, ReadShortcut readShortcut)
         {
             _appName = appName;
             _createShortcut = createShortcut;
             _options = options;
+            _readShortcut = readShortcut;
         }
 
         string LinkPath => Path.Combine(
@@ -23,13 +25,29 @@ namespace TidyDesktopMonster.AppHelper
 
         public bool RunOnStartup
         {
-            get => File.Exists(LinkPath);
+            get => LinkTargetExists(LinkPath);
             set
             {
                 if (value)
                     _createShortcut(LinkPath, _options);
                 else
                     File.Delete(LinkPath);
+            }
+        }
+
+        bool LinkTargetExists(string linkPath)
+        {
+            try
+            {
+                if (!File.Exists(linkPath))
+                    return false;
+
+                var link = _readShortcut(linkPath);
+                return File.Exists(link.Target);
+            }
+            catch
+            {
+                return false;
             }
         }
     }

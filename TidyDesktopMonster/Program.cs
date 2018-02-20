@@ -54,7 +54,8 @@ namespace TidyDesktopMonster
             var startupRegistration = new StartupFolderRegistration(
                 AppName.ToLowerInvariant(),
                 new ShortcutOptions { Arguments = "-StartService", Target = AppPath },
-                WindowsScriptHostWrapper.CreateShortcut);
+                WindowsScriptHostWrapper.CreateShortcut,
+                ShellifyWrapper.ReadShortcut);
 
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
             {
