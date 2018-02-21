@@ -102,7 +102,6 @@
             this.RunOnStartup.TabIndex = 3;
             this.RunOnStartup.Text = "Run on startup?";
             this.RunOnStartup.UseVisualStyleBackColor = true;
-            this.RunOnStartup.CheckedChanged += new System.EventHandler(this.RunOnStartup_CheckedChanged);
             // 
             // TidyAllUsers
             // 

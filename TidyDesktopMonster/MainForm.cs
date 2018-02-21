@@ -37,7 +37,9 @@ namespace TidyDesktopMonster
         void MainForm_Load(object sender, EventArgs e)
         {
             TidyAllUsers.Checked = _settingsStore.Read<bool?>(Constants.TidyAllUsersSetting) ?? true;
+
             RunOnStartup.Checked = _startupRegistration.RunOnStartup;
+            RunOnStartup.CheckedChanged += RunOnStartup_CheckedChanged;
 
             ShortcutFilter.ValueMember = "Item1";
             ShortcutFilter.DisplayMember = "Item2";
