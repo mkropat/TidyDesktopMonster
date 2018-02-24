@@ -6,37 +6,47 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TidyDesktopMonster.Interface;
 using TidyDesktopMonster.Logging;
+using TidyDesktopMonster.WinApi;
 
 namespace TidyDesktopMonster
 {
     public partial class MainForm : Form
     {
+        const uint viewLogCommandId = 0x0001;
+
         readonly string _appPath;
         readonly int _openWindowMessage;
+        Form _logViewer = null;
+        readonly IUpdatingSubject<LogEntry> _logEntries;
         CancellationTokenSource _serviceCts = new CancellationTokenSource();
         Task _serviceTask = Task.FromResult<object>(null);
         readonly IKeyValueStore _settingsStore;
         readonly bool _showSettingsForm;
         readonly Func<CancellationToken, Task> _startService;
         readonly IStartupRegistration _startupRegistration;
+        readonly SystemMenuManager _systemMenu;
         Container _trayContainer = new Container();
 
         bool ExistsTrayIcon => _trayContainer.Components.Count > 0;
 
-        public MainForm(bool showSettingsForm, string appPath, int openWindowMessage, IKeyValueStore settingsStore, Func<CancellationToken, Task> startService, IStartupRegistration startupRegistration)
+        public MainForm(bool showSettingsForm, string appPath, IUpdatingSubject<LogEntry> logEntries, int openWindowMessage, IKeyValueStore settingsStore, Func<CancellationToken, Task> startService, IStartupRegistration startupRegistration)
         {
             InitializeComponent();
 
             _appPath = appPath;
+            _logEntries = logEntries;
             _openWindowMessage = openWindowMessage;
             _settingsStore = settingsStore;
             _showSettingsForm = showSettingsForm;
             _startService = startService;
             _startupRegistration = startupRegistration;
+            _systemMenu = new SystemMenuManager(() => Handle);
         }
 
         void MainForm_Load(object sender, EventArgs e)
         {
+            _systemMenu.EnsureAdded();
+
             TidyAllUsers.Checked = _settingsStore.Read<bool?>(Constants.TidyAllUsersSetting) ?? true;
 
             RunOnStartup.Checked = _startupRegistration.RunOnStartup;
@@ -196,10 +206,35 @@ namespace TidyDesktopMonster
 
         protected override void WndProc(ref Message m)
         {
-            if (m.Msg == _openWindowMessage)
+            const int WM_SYSCOMMAND = 0x0112;
+
+            if (m.Msg == WM_SYSCOMMAND)
+            {
+                switch ((uint)m.WParam)
+                {
+                    case viewLogCommandId:
+                        OpenLogViewer();
+                        break;
+                }
+            }
+            else if (m.Msg == _openWindowMessage)
                 OpenWindow();
 
             base.WndProc(ref m);
+        }
+
+        void OpenLogViewer()
+        {
+            if (_logViewer != null)
+                return;
+
+            _logViewer = new LogViewer(_logEntries)
+            {
+                Owner = this,
+            };
+            _logViewer.Show();
+
+            _logViewer.FormClosed += (o, e) => _logViewer = null;
         }
 
         bool IsInBackground => !TopLevel;
@@ -211,6 +246,8 @@ namespace TidyDesktopMonster
             ShowInTaskbar = true;
             WindowState = FormWindowState.Normal;
             Activate();
+
+            _systemMenu.EnsureAdded();
         }
 
         void CloseWindow()
@@ -219,6 +256,8 @@ namespace TidyDesktopMonster
             Visible = false;
             ShowInTaskbar = false;
             TopLevel = false;
+
+            _systemMenu.Reset();
         }
 
         protected override void Dispose(bool disposing)
@@ -226,6 +265,7 @@ namespace TidyDesktopMonster
             if (disposing)
             {
                 components?.Dispose();
+                _logViewer?.Dispose();
                 _serviceCts.Cancel();
                 _serviceCts.Dispose();
                 _trayContainer.Dispose();
@@ -239,6 +279,33 @@ namespace TidyDesktopMonster
             Stopping,
             Stopped,
             Errored,
+        }
+
+        class SystemMenuManager
+        {
+            bool _added;
+            readonly Func<IntPtr> _getHandle;
+
+            public SystemMenuManager(Func<IntPtr> getHandle)
+            {
+                _getHandle = getHandle;
+                Reset();
+            }
+
+            public void EnsureAdded()
+            {
+                if (_added)
+                    return;
+
+                var sysMenu = new SystemMenu(_getHandle());
+                sysMenu.PrependItem(viewLogCommandId, "&View Logs");
+                _added = true;
+            }
+
+            public void Reset()
+            {
+                _added = false;
+            }
         }
     }
 }

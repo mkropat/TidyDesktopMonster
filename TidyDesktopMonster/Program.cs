@@ -72,6 +72,7 @@ namespace TidyDesktopMonster
                 RunForm(new MainForm(
                     showSettingsForm: !shouldStartService,
                     appPath: AppPath,
+                    logEntries: logBuffer,
                     openWindowMessage: (int)User32Messages.GetMessage(Constants.OpenWindowMessage),
                     settingsStore: settingsStore,
                     startService: service.Run,

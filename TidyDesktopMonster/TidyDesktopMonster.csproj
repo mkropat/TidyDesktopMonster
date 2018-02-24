@@ -71,6 +71,12 @@
     <Compile Include="Logging\NullLog.cs" />
     <Compile Include="Logging\ObjectFormatter.cs" />
     <Compile Include="Logging\RotatingBufferSink.cs" />
+    <Compile Include="LogViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogViewer.Designer.cs">
+      <DependentUpon>LogViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,8 +96,12 @@
     <Compile Include="WinApi\Shell32\Shell32Delete.cs" />
     <Compile Include="WinApi\Shell32\ShellFileOptions.cs" />
     <Compile Include="WinApi\ShellifyWrapper.cs" />
+    <Compile Include="WinApi\SystemMenu.cs" />
     <Compile Include="WinApi\User32Messages.cs" />
     <Compile Include="WinApi\WindowsScriptHostWrapper.cs" />
+    <EmbeddedResource Include="LogViewer.resx">
+      <DependentUpon>LogViewer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
