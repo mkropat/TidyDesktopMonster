@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TidyDesktopMonster.Interface;
+using TidyDesktopMonster.Logging;
 
 namespace TidyDesktopMonster
 {
@@ -23,7 +24,13 @@ namespace TidyDesktopMonster
         public IEnumerable<T> GetSubjects()
         {
             return _subject.GetSubjects()
-                .Where(_predicate)
+                .Where(x =>
+                {
+                    var result = _predicate(x);
+                    if (!result)
+                        Log.Debug($"Filtering out '{x}'");
+                    return result;
+                })
                 .ToArray();
         }
 

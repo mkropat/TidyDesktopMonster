@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using TidyDesktopMonster.Interface;
+using TidyDesktopMonster.Logging;
 
 namespace TidyDesktopMonster.AppHelper
 {
@@ -29,9 +30,15 @@ namespace TidyDesktopMonster.AppHelper
             set
             {
                 if (value)
+                {
                     _createShortcut(LinkPath, _options);
+                    Log.Info($"Created startup shortcut at '{LinkPath}'");
+                }
                 else
+                {
                     File.Delete(LinkPath);
+                    Log.Info($"Deleted startup shortcut at '{LinkPath}'");
+                }
             }
         }
 
@@ -45,8 +52,9 @@ namespace TidyDesktopMonster.AppHelper
                 var link = _readShortcut(linkPath);
                 return File.Exists(link.Target);
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error("Error when attempting to read link target", ex);
                 return false;
             }
         }

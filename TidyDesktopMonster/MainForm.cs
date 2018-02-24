@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TidyDesktopMonster.Interface;
+using TidyDesktopMonster.Logging;
 
 namespace TidyDesktopMonster
 {
@@ -107,6 +108,8 @@ namespace TidyDesktopMonster
 
         async Task RunStartService()
         {
+            Log.Info("Starting background service");
+
             CreateTrayIcon();
             CloseWindow();
             SetServiceState(ServiceState.Started);
@@ -114,11 +117,13 @@ namespace TidyDesktopMonster
             try
             {
                 await _startService(_serviceCts.Token);
+                Log.Info("Background service stopped");
 
                 SetServiceState(ServiceState.Stopped);
             }
             catch (Exception ex)
             {
+                Log.Error("Background service terminated with error", ex);
                 SetServiceState(ServiceState.Errored, ex.Message);
             }
 

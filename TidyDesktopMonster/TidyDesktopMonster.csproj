@@ -64,6 +64,13 @@
     <Compile Include="Interface\IUpdatingSubject.cs" />
     <Compile Include="Interface\ShortcutFilterType.cs" />
     <Compile Include="InMemoryKeyValueCache.cs" />
+    <Compile Include="Logging\ILogSink.cs" />
+    <Compile Include="Logging\LogEntry.cs" />
+    <Compile Include="Logging\MinimumSeveritySink.cs" />
+    <Compile Include="Logging\Log.cs" />
+    <Compile Include="Logging\NullLog.cs" />
+    <Compile Include="Logging\ObjectFormatter.cs" />
+    <Compile Include="Logging\RotatingBufferSink.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

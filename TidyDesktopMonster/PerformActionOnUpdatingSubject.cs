@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TidyDesktopMonster.Interface;
+using TidyDesktopMonster.Logging;
 using TidyDesktopMonster.Scheduling;
 
 namespace TidyDesktopMonster
@@ -43,8 +44,9 @@ namespace TidyDesktopMonster
                 {
                     subjects = subject.GetSubjects();
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Log.Info("Error when reading subjects", ex);
                     _scheduler.RunAfterBackoff();
                 }
 
@@ -53,9 +55,11 @@ namespace TidyDesktopMonster
                     try
                     {
                         _action(x);
+                        Log.Info($"Performed action on '{x}'");
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Log.Warn($"Error when performing action on '{x}'", ex);
                         _scheduler.RunAfterBackoff();
                     }
                 }

@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TidyDesktopMonster.AppHelper;
 using TidyDesktopMonster.Interface;
+using TidyDesktopMonster.Logging;
 using TidyDesktopMonster.Scheduling;
 using TidyDesktopMonster.WinApi;
 using TidyDesktopMonster.WinApi.Shell32;
@@ -45,6 +46,10 @@ namespace TidyDesktopMonster
         static void RunApp(string[] args)
         {
             var shouldStartService = args.Any(x => "-StartService".Equals(x, StringComparison.InvariantCultureIgnoreCase));
+
+            var logBuffer = new RotatingBufferSink();
+            Log.Sink = new MinimumSeveritySink(logBuffer, LogLevel.Info);
+            Log.Info("Logging initialized");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
