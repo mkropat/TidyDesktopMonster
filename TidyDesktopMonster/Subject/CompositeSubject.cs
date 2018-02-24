@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TidyDesktopMonster.Interface;
 
-namespace TidyDesktopMonster
+namespace TidyDesktopMonster.Subject
 {
     internal sealed class CompositeSubject<T> : IUpdatingSubject<T>
     {

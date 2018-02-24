@@ -4,7 +4,7 @@ using System.Linq;
 using TidyDesktopMonster.Interface;
 using TidyDesktopMonster.Logging;
 
-namespace TidyDesktopMonster
+namespace TidyDesktopMonster.Subject
 {
     internal sealed class FilteringSubject<T> : IUpdatingSubject<T>
     {

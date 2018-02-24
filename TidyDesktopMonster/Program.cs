@@ -8,6 +8,7 @@ using TidyDesktopMonster.AppHelper;
 using TidyDesktopMonster.Interface;
 using TidyDesktopMonster.Logging;
 using TidyDesktopMonster.Scheduling;
+using TidyDesktopMonster.Subject;
 using TidyDesktopMonster.WinApi;
 using TidyDesktopMonster.WinApi.Shell32;
 
