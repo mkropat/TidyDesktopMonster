@@ -1,6 +1,6 @@
-<img alt="logo" src="https://raw.githubusercontent.com/mkropat/TidyDesktopMonster/master/docs/logo.png" width="35%" />
+<img alt="logo" src="https://raw.githubusercontent.com/mkropat/TidyDesktopMonster/master/docs/logo.png" width="35%" title="Logo copyright 2018 Laura Kropat" />
 
-# TidyDesktopMonster
+# Tidy Desktop Monster
 
 Tidy Desktop Monster is a desktop daemon. It lies quietly in the system tray, waiting for a shortcut to appear on the desktop. When one appears, Tidy Desktop Monster comes to life to eat the shortcut and poop it into the Recycle Bin.
 
@@ -18,3 +18,9 @@ SmartScreen may flag the program because I'm too cheap to spend 28€ for a prog
 ![smartscreen](https://raw.githubusercontent.com/mkropat/TidyDesktopMonster/master/docs/smartscreen.png)
 
 If you click __More info__ then __Run Anyway__ the program should start.
+
+## Troubleshooting
+
+When submitting a [bug report](/../../issues), it can help to include the logs. You can view the logs by right clicking on the icon in the upper-left corner of the settings window and clicking __View Logs__:
+
+![view logs option](https://raw.githubusercontent.com/mkropat/TidyDesktopMonster/master/docs/view-logs.png)
