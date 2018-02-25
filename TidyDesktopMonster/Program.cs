@@ -48,15 +48,15 @@ namespace TidyDesktopMonster
         {
             var shouldStartService = args.Any(x => "-StartService".Equals(x, StringComparison.InvariantCultureIgnoreCase));
 
+            var settingsStore = new InMemoryKeyValueCache(new RegistryKeyValueStore(AppName));
+
             var logBuffer = new RotatingBufferSink();
-            Log.Sink = new MinimumSeveritySink(logBuffer, LogLevel.Info);
-            Log.Info("Logging initialized");
+            InitializeLogging(logBuffer, settingsStore);
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
             var retryLogic = new ExponentialBackoffLogic(min: TimeSpan.FromMilliseconds(10), max: TimeSpan.FromHours(1));
-            var settingsStore = new InMemoryKeyValueCache(new RegistryKeyValueStore(AppName));
             var startupRegistration = new StartupFolderRegistration(
                 AppName.ToLowerInvariant(),
                 new ShortcutOptions { Arguments = "-StartService", Target = AppPath },
@@ -79,6 +79,17 @@ namespace TidyDesktopMonster
                     startService: service.Run,
                     startupRegistration: startupRegistration));
             }
+        }
+
+        static void InitializeLogging(ILogSink sink, IKeyValueStore settingsStore)
+        {
+            Log.Sink = sink;
+            Log.Info("Logging initialized");
+
+            var minimumSeverity = settingsStore.Read<LogLevel?>("MinimumSeverity") ?? LogLevel.Info;
+            Log.Info($"Setting minimum severity to {minimumSeverity}");
+
+            Log.Sink = new MinimumSeveritySink(sink, minimumSeverity);
         }
 
         static IUpdatingSubject<string> CreateSubject(IKeyValueStore settingsStore)
