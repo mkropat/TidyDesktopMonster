@@ -8,15 +8,15 @@ using TidyDesktopMonster.Scheduling;
 
 namespace TidyDesktopMonster
 {
-    internal class PerformActionOnUpdatingSubject<T>
+    internal class WatchForFilesToDelete<T>
     {
-        readonly Action<T> _action;
+        readonly Action<T> _delete;
         readonly WorkScheduler _scheduler;
         readonly Func<IUpdatingSubject<T>> _subjectFactory;
 
-        public PerformActionOnUpdatingSubject(Func<IUpdatingSubject<T>> subjectFactory, Action<T> action, WorkScheduler scheduler)
+        public WatchForFilesToDelete(Func<IUpdatingSubject<T>> subjectFactory, Action<T> delete, WorkScheduler scheduler)
         {
-            _action = action;
+            _delete = delete;
             _scheduler = scheduler;
             _subjectFactory = subjectFactory;
         }
@@ -46,7 +46,7 @@ namespace TidyDesktopMonster
                 }
                 catch (Exception ex)
                 {
-                    Log.Info("Error when reading subjects", ex);
+                    Log.Info("Error when looking for files to delete", ex);
                     _scheduler.RunAfterBackoff();
                 }
 
@@ -54,12 +54,12 @@ namespace TidyDesktopMonster
                 {
                     try
                     {
-                        _action(x);
-                        Log.Info($"Performed action on '{x}'");
+                        _delete(x);
+                        Log.Info($"Deleted the file '{x}'");
                     }
                     catch (Exception ex)
                     {
-                        Log.Warn($"Error when performing action on '{x}'", ex);
+                        Log.Warn($"Error when deleting the file '{x}'", ex);
                         _scheduler.RunAfterBackoff();
                     }
                 }

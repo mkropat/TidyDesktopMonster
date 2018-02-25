@@ -65,9 +65,9 @@ namespace TidyDesktopMonster
 
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
             {
-                var service = new PerformActionOnUpdatingSubject<string>(
+                var service = new WatchForFilesToDelete<string>(
                     subjectFactory: () => CreateSubject(settingsStore),
-                    action: Shell32Delete.DeleteFile,
+                    delete: Shell32Delete.DeleteFile,
                     scheduler: scheduler);
 
                 RunForm(new MainForm(
