@@ -24,6 +24,8 @@ namespace TidyDesktopMonster
 
         static string AppPath { get; } = _appAssembly.Location;
 
+        static string AppVersion { get; } = _appAssembly.GetName().Version.ToString();
+
         static string ProgramId { get; } = _appAssembly
             .GetCustomAttribute<GuidAttribute>()
             .Value;
@@ -51,7 +53,8 @@ namespace TidyDesktopMonster
             var settingsStore = new InMemoryKeyValueCache(new RegistryKeyValueStore(AppName));
 
             var logBuffer = new RotatingBufferSink();
-            InitializeLogging(logBuffer, settingsStore);
+            InitializeLogging(logBuffer, settingsStore, defaultLogLevel: LogLevel.Info);
+            Log.Info($"Running version: {AppVersion}");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -81,12 +84,12 @@ namespace TidyDesktopMonster
             }
         }
 
-        static void InitializeLogging(ILogSink sink, IKeyValueStore settingsStore)
+        static void InitializeLogging(ILogSink sink, IKeyValueStore settingsStore, LogLevel defaultLogLevel)
         {
             Log.Sink = sink;
             Log.Info("Logging initialized");
 
-            var minimumSeverity = settingsStore.Read<LogLevel?>("MinimumSeverity") ?? LogLevel.Info;
+            var minimumSeverity = settingsStore.Read<LogLevel?>("MinimumSeverity") ?? defaultLogLevel;
             Log.Info($"Setting minimum severity to {minimumSeverity}");
 
             Log.Sink = new MinimumSeveritySink(sink, minimumSeverity);
