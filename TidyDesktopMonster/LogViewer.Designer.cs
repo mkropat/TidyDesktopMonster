@@ -39,20 +39,20 @@
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
             this.logTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.logTextBox.Size = new System.Drawing.Size(969, 456);
+            this.logTextBox.Size = new System.Drawing.Size(1032, 456);
             this.logTextBox.TabIndex = 0;
             // 
             // LogViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(969, 456);
+            this.ClientSize = new System.Drawing.Size(1032, 456);
             this.Controls.Add(this.logTextBox);
             this.MinimizeBox = false;
             this.Name = "LogViewer";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.Text = "LogViewer";
+            this.Text = "Tidy Desktop Monster Logs";
             this.Load += new System.EventHandler(this.LogViewer_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
