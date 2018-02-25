@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TidyDesktopMonster.AppHelper;
 using TidyDesktopMonster.Interface;
+using TidyDesktopMonster.KeyValueStore;
 using TidyDesktopMonster.Logging;
 using TidyDesktopMonster.Scheduling;
 using TidyDesktopMonster.Subject;
@@ -48,7 +49,8 @@ namespace TidyDesktopMonster
         {
             var shouldStartService = args.Any(x => "-StartService".Equals(x, StringComparison.InvariantCultureIgnoreCase));
 
-            var settingsStore = new InMemoryKeyValueCache(new RegistryKeyValueStore(AppName));
+            var settingsStore = new InMemoryKeyValueCache(
+                new EnvironmentOverride(AppName, new RegistryKeyValueStore(AppName)));
 
             var logBuffer = new RotatingBufferSink();
             InitializeLogging(logBuffer, settingsStore);

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TidyDesktopMonster.Interface;
 
-namespace TidyDesktopMonster
+namespace TidyDesktopMonster.KeyValueStore
 {
     internal class InMemoryKeyValueCache : IKeyValueStore
     {

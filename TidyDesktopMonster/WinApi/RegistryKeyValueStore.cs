@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Microsoft.Win32;
 using TidyDesktopMonster.Interface;
+using TidyDesktopMonster.KeyValueStore;
 
 namespace TidyDesktopMonster.WinApi
 {
@@ -25,25 +25,8 @@ namespace TidyDesktopMonster.WinApi
             {
                 return regKey == null
                     ? default
-                    : CoerceToType<T>(regKey.GetValue(key));
+                    : TypeConverter.CoerceToType<T>(regKey.GetValue(key));
             }
-        }
-
-        T CoerceToType<T>(object value)
-        {
-            var type = typeof(T);
-            var targetType = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)
-                ? Nullable.GetUnderlyingType(type)
-                : type;
-
-            if (value == null)
-                return default;
-            else if (targetType.IsEnum)
-                return Enum.IsDefined(targetType, value)
-                    ? (T)Enum.Parse(targetType, value as string)
-                    : default;
-            else
-                return (T)Convert.ChangeType(value, targetType);
         }
 
         public void Write<T>(string key, T value)

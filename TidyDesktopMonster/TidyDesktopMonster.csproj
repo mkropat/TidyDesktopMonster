@@ -54,6 +54,8 @@
   <ItemGroup>
     <Compile Include="AppHelper\SingleInstanceGuard.cs" />
     <Compile Include="AppHelper\StartupFolderRegistration.cs" />
+    <Compile Include="KeyValueStore\EnvironmentOverride.cs" />
+    <Compile Include="KeyValueStore\TypeConverter.cs" />
     <Compile Include="Subject\CompositeSubject.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Subject\FilteringSubject.cs" />
@@ -63,7 +65,7 @@
     <Compile Include="Interface\IStartupRegistration.cs" />
     <Compile Include="Interface\IUpdatingSubject.cs" />
     <Compile Include="Interface\ShortcutFilterType.cs" />
-    <Compile Include="InMemoryKeyValueCache.cs" />
+    <Compile Include="KeyValueStore\InMemoryKeyValueCache.cs" />
     <Compile Include="Logging\ILogSink.cs" />
     <Compile Include="Logging\LogEntry.cs" />
     <Compile Include="Logging\MinimumSeveritySink.cs" />
