@@ -47,9 +47,11 @@ namespace TidyDesktopMonster.Logging
 
         static string FormatDataStructure(object obj, string[] properties, int indentLevel)
         {
+            var type = obj.GetType();
+            var typeNamePrefix = type.Namespace == null ? string.Empty : type.Name + " ";
             var innerIndent = new string(' ', indentLevel * 2);
             var outerIndent = new string(' ', (indentLevel - 1) * 2);
-            return obj.GetType().Name + " {" + Environment.NewLine +
+            return typeNamePrefix + "{" + Environment.NewLine +
                 innerIndent + string.Join(Environment.NewLine + innerIndent, properties) + Environment.NewLine +
                 outerIndent + "}";
         }
