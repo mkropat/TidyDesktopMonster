@@ -47,14 +47,20 @@ namespace TidyDesktopMonster.AppHelper
             try
             {
                 if (!File.Exists(linkPath))
+                {
+                    Log.Debug($"Startup link does not exist at '{linkPath}'");
                     return false;
+                }
 
                 var link = _readShortcut(linkPath);
-                return File.Exists(link.Target);
+                var result = File.Exists(link.Target);
+                if (!result)
+                    Log.Debug($"Startup link target does not exist '{link.Target}'");
+                return result;
             }
             catch (Exception ex)
             {
-                Log.Error("Error when attempting to read link target", ex);
+                Log.Error("Error when attempting to read startup link", ex);
                 return false;
             }
         }
