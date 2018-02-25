@@ -14,22 +14,23 @@ namespace TidyDesktopMonster.Logging
 
         public RotatingBufferSink(int maxEntries=100)
         {
-            _entries = new LogEntry[maxEntries];
+            _entries = new LogEntry[maxEntries + 1];
         }
 
         public void Write(LogEntry entry)
         {
             _entries[_end] = entry;
-            _end = _end + 1 % _entries.Length;
+            _end = (_end + 1) % _entries.Length;
             if (_end == _start)
-                _start = _start + 1 % _entries.Length;
+                _start = (_start + 1) % _entries.Length;
 
             SubjectChanged(this, new EventArgs());
         }
 
         public IEnumerable<LogEntry> GetSubjects()
         {
-            for (var i = _start; i < _end && i < _entries.Length; i++)
+            var firstPassEnd = _end < _start ? _entries.Length : _end;
+            for (var i = _start; i < firstPassEnd; i++)
                 yield return _entries[i];
 
             if (_end < _start)
