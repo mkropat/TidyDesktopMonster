@@ -7,6 +7,8 @@ namespace TidyDesktopMonster.WinApi.Shell32
 {
     internal static class Shell32Delete
     {
+        const int DE_ACCESSDENIEDSRC = 0x78;
+
         // https://msdn.microsoft.com/en-us/library/windows/desktop/bb762164.aspx
         public static void DeleteFile(string path)
         {
@@ -18,8 +20,10 @@ namespace TidyDesktopMonster.WinApi.Shell32
             fileOp.flags = FileOperationFlags.FOF_ALLOWUNDO | noUiFlags;
 
             var result = NativeMethods.SHFileOperation(ref fileOp);
+            if (result == DE_ACCESSDENIEDSRC)
+                throw new AccessDeniedException();
             if (result != 0)
-                throw new Exception($"SHFileOperation returned {result}: {GetErrorMessage(result)}");
+                throw new Exception($"SHFileOperation returned 0x{result:X}: {GetErrorMessage(result)}");
 
             if (fileOp.anyOperationsAborted)
                 throw new Exception("SHFileOperation was aborted");

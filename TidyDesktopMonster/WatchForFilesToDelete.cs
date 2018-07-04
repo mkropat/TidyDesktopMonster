@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TidyDesktopMonster.Interface;
 using TidyDesktopMonster.Logging;
 using TidyDesktopMonster.Scheduling;
+using TidyDesktopMonster.WinApi.Shell32;
 
 namespace TidyDesktopMonster
 {
@@ -56,6 +57,10 @@ namespace TidyDesktopMonster
                     {
                         _delete(x);
                         Log.Info($"Deleted the file '{x}'");
+                    }
+                    catch (AccessDeniedException)
+                    {
+                        Log.Warn($"Access denied when deleting the file '{x}'");
                     }
                     catch (Exception ex)
                     {

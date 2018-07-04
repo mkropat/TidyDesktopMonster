@@ -91,6 +91,7 @@
     <Compile Include="WinApi\FilesInDirectorySubject.cs" />
     <Compile Include="WinApi\RegistryKeyValueStore.cs" />
     <Compile Include="WinApi\Shell32Wrapper.cs" />
+    <Compile Include="WinApi\Shell32\AccessDeniedException.cs" />
     <Compile Include="WinApi\Shell32\FileOperation.cs" />
     <Compile Include="WinApi\Shell32\FileOperationFlags.cs" />
     <Compile Include="WinApi\Shell32\Shell32Delete.cs" />
