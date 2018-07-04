@@ -127,7 +127,8 @@ namespace TidyDesktopMonster
 
         static bool PathHasExtension(string path, string[] extensions)
         {
-            return extensions.Contains(Path.GetExtension(path), StringComparer.InvariantCultureIgnoreCase);
+            var pathExtension = Path.GetExtension(path);
+            return extensions.Contains(pathExtension, StringComparer.InvariantCultureIgnoreCase);
         }
 
         static void RunForm(Form form)

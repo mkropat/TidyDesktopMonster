@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using TidyDesktopMonster.Interface;
 using TidyDesktopMonster.Logging;
 
@@ -23,15 +22,15 @@ namespace TidyDesktopMonster.Subject
 
         public IEnumerable<T> GetSubjects()
         {
-            return _subject.GetSubjects()
-                .Where(x =>
-                {
-                    var result = _predicate(x);
-                    if (!result)
-                        Log.Debug($"Filtering out '{x}'");
-                    return result;
-                })
-                .ToArray();
+            var result = new List<T>();
+            foreach (var x in _subject.GetSubjects())
+            {
+                if (_predicate(x))
+                    result.Add(x);
+                else
+                    Log.Debug($"Filtering out '{x}'");
+            }
+            return result;
         }
 
         public void StartWatching()

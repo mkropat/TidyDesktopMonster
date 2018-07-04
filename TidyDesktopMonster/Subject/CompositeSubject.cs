@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using TidyDesktopMonster.Interface;
 
 namespace TidyDesktopMonster.Subject
@@ -21,9 +20,10 @@ namespace TidyDesktopMonster.Subject
 
         public IEnumerable<T> GetSubjects()
         {
-            return _subjects
-                .SelectMany(x => x.GetSubjects())
-                .ToArray();
+            var result = new List<T>();
+            foreach (var x in _subjects)
+                result.AddRange(x.GetSubjects());
+            return result;
         }
 
         public void StartWatching()
