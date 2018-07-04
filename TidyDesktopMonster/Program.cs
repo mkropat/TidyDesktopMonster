@@ -100,12 +100,13 @@ namespace TidyDesktopMonster
             var filter = settingsStore.Read<ShortcutFilterType?>(Constants.ShortcutFilterSetting);
             switch (filter)
             {
+                case ShortcutFilterType.All:
+                    return CreateDirectoryWatcher(settingsStore);
                 case ShortcutFilterType.Apps:
+                default:
                     return new FilteringSubject<string>(
                         CreateDirectoryWatcher(settingsStore),
                         path => PathHasExtension(ShellifyWrapper.ReadShortcut(path).Target, ApplicationExtensions));
-                default:
-                    return CreateDirectoryWatcher(settingsStore);
             }
         }
 
