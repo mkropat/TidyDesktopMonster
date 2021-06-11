@@ -11,7 +11,7 @@ namespace TidyDesktopMonster.WinApi
         readonly string _pattern;
         readonly FileSystemWatcher _watcher;
 
-        public FilesInDirectorySubject(string directoryPath, string searchPattern = "*.*")
+        public FilesInDirectorySubject(string directoryPath, string searchPattern = "")
         {
             _directory = directoryPath;
             _pattern = searchPattern;
