@@ -24,7 +24,7 @@ namespace TidyDesktopMonster.Logging
             if (_end == _start)
                 _start = (_start + 1) % _entries.Length;
 
-            SubjectChanged(this, new EventArgs());
+            SubjectChanged?.Invoke(this, new EventArgs());
         }
 
         public IEnumerable<LogEntry> GetSubjects()
