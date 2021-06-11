@@ -114,16 +114,20 @@ namespace TidyDesktopMonster
         {
             var allUsersDesktop = Environment.GetFolderPath(Environment.SpecialFolder.CommonDesktopDirectory);
             var currentUserDesktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            var searchPattern = "*.lnk";
 
             return settingsStore.Read<bool?>(Constants.TidyAllUsersSetting) == true
-                ? (IUpdatingSubject<string>)new CompositeSubject<string>(new[]
+                ? new CompositeSubject<string>(new[]
                 {
-                    new FilesInDirectorySubject(allUsersDesktop, searchPattern),
-                    new FilesInDirectorySubject(currentUserDesktop, searchPattern),
-
+                    new FilesInDirectorySubject(allUsersDesktop, "*.lnk"),
+                    new FilesInDirectorySubject(allUsersDesktop, "*.url"),
+                    new FilesInDirectorySubject(currentUserDesktop, "*.lnk"),
+                    new FilesInDirectorySubject(currentUserDesktop, "*.url"),
                 })
-                : new FilesInDirectorySubject(currentUserDesktop, searchPattern);
+                : new CompositeSubject<string>(new[]
+                {
+                    new FilesInDirectorySubject(currentUserDesktop, "*.lnk"),
+                    new FilesInDirectorySubject(currentUserDesktop, "*.url"),
+                });
         }
 
         static bool PathHasExtension(string path, string[] extensions)
