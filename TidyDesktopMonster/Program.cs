@@ -71,7 +71,8 @@ namespace TidyDesktopMonster
                 var service = new WatchForFilesToDelete<string>(
                     subjectFactory: () => CreateSubject(settingsStore),
                     delete: Shell32Delete.DeleteFile,
-                    scheduler: scheduler);
+                    scheduler: scheduler,
+                    settingsStore: settingsStore);
 
                 RunForm(new MainForm(
                     showSettingsForm: !shouldStartService,

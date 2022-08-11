@@ -11,15 +11,17 @@ namespace TidyDesktopMonster
 {
     internal class WatchForFilesToDelete<T>
     {
-        readonly Action<T> _delete;
+        readonly Action<T, bool> _delete;
         readonly WorkScheduler _scheduler;
         readonly Func<IUpdatingSubject<T>> _subjectFactory;
+        readonly InMemoryKeyValueCache _settingsStore;
 
-        public WatchForFilesToDelete(Func<IUpdatingSubject<T>> subjectFactory, Action<T> delete, WorkScheduler scheduler)
+        public WatchForFilesToDelete(Func<IUpdatingSubject<T>> subjectFactory, Action<T, bool> delete, WorkScheduler scheduler, InMemoryKeyValueCache settingsStore)
         {
             _delete = delete;
             _scheduler = scheduler;
             _subjectFactory = subjectFactory;
+            _settingsStore = settingsStore;
         }
 
         public async Task Run(CancellationToken cancelToken)
@@ -55,7 +57,10 @@ namespace TidyDesktopMonster
                 {
                     try
                     {
-                        _delete(x);
+                        bool? skipRecycleBin = _settingsStore.Read<bool?>(Constants.SkipRecycleBinSetting);
+                        if (skipRecycleBin == null)
+                            skipRecycleBin = false;
+                            _delete(x, (bool)skipRecycleBin);
                         Log.Info($"Deleted the file '{x}'");
                     }
                     catch (AccessDeniedException)
