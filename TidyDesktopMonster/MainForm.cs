@@ -316,5 +316,5 @@ namespace TidyDesktopMonster
                 _added = false;
             }
         }
-	}
+    }
 }
