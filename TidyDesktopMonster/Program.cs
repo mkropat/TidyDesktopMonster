@@ -16,7 +16,7 @@ namespace TidyDesktopMonster
 {
     static class Program
     {
-        static Assembly _appAssembly = typeof(Program).Assembly;
+        static readonly Assembly _appAssembly = typeof(Program).Assembly;
 
         static string AppName { get; } = _appAssembly
             .GetCustomAttribute<AssemblyTitleAttribute>()
