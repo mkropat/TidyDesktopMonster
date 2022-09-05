@@ -16,8 +16,8 @@ namespace TidyDesktopMonster.Logging
                 return "null";
             else if (obj is string || obj is Exception || obj.GetType().IsValueType)
                 return Convert.ToString(obj);
-            else if (obj is System.Collections.IEnumerable)
-                return FormatEnumerable((System.Collections.IEnumerable)obj, indent);
+            else if (obj is System.Collections.IEnumerable enumerable)
+                return FormatEnumerable(enumerable, indent);
             else if (indent > 1)
                 return Convert.ToString(obj);
             else
