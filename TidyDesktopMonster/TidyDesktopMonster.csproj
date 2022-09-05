@@ -154,9 +154,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shellify\ShellifyLib\ShellifyLib.csproj">
-      <Project>{96bdf0a5-ce59-4f15-a809-4b086b2120af}</Project>
-      <Name>ShellifyLib</Name>
+    <ProjectReference Include="..\Shellify\Shellify\Shellify.csproj">
+      <Project>{90c1bd42-9d27-4ab7-a493-75c92c39c69d}</Project>
+      <Name>Shellify</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +169,7 @@
   </PropertyGroup>
   <Target Name="ILMerge" AfterTargets="Build">
     <MakeDir Directories="$(BinOutputDir)" />
-    <Exec Command="$(ILMergeConsolePath) /out:$(BinOutputDir)TidyDesktopMonster.exe $(TargetDir)TidyDesktopMonster.exe $(TargetDir)ShellifyLib.dll" />
+    <Exec Command="$(ILMergeConsolePath) /out:$(BinOutputDir)TidyDesktopMonster.exe $(TargetDir)TidyDesktopMonster.exe $(TargetDir)Shellify.dll" />
   </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
