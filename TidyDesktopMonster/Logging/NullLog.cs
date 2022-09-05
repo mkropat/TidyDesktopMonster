@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TidyDesktopMonster.Logging
+﻿namespace TidyDesktopMonster.Logging
 {
     internal class NullLog : ILogSink
     {
