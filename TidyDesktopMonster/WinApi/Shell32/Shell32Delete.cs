@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
+using TidyDesktopMonster.Interface;
 
 namespace TidyDesktopMonster.WinApi.Shell32
 {
@@ -10,7 +11,7 @@ namespace TidyDesktopMonster.WinApi.Shell32
         const int DE_ACCESSDENIEDSRC = 0x78;
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/bb762164.aspx
-        public static void DeleteFile(string path, bool skipRecycleBin)
+        public static void DeleteFile(string path, DeleteBehavior deleteBehavior)
         {
             var fileOp = default(ShellFileOptions);
             fileOp.func = FileOperation.FO_DELETE;
@@ -18,7 +19,7 @@ namespace TidyDesktopMonster.WinApi.Shell32
 
             var noUiFlags = FileOperationFlags.FOF_SILENT | FileOperationFlags.FOF_NOCONFIRMATION | FileOperationFlags.FOF_NOERRORUI | FileOperationFlags.FOF_NOCONFIRMMKDIR;
             fileOp.flags = noUiFlags;
-            if (!skipRecycleBin)
+            if (deleteBehavior == DeleteBehavior.DeleteToRecycleBin)
                 fileOp.flags |= FileOperationFlags.FOF_ALLOWUNDO;
 
             var result = NativeMethods.SHFileOperation(ref fileOp);

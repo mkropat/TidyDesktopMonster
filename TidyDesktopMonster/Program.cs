@@ -5,12 +5,12 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using TidyDesktopMonster.AppHelper;
+using TidyDesktopMonster.FileDeleter;
 using TidyDesktopMonster.Interface;
 using TidyDesktopMonster.Logging;
 using TidyDesktopMonster.Scheduling;
 using TidyDesktopMonster.Subject;
 using TidyDesktopMonster.WinApi;
-using TidyDesktopMonster.WinApi.Shell32;
 
 namespace TidyDesktopMonster
 {
@@ -68,11 +68,10 @@ namespace TidyDesktopMonster
 
             using (var scheduler = new WorkScheduler(retryLogic.CalculateRetryAfter))
             {
-                var service = new WatchForFilesToDelete<string>(
+                var service = new WatchForFilesToDelete(
                     subjectFactory: () => CreateSubject(settingsStore),
-                    delete: Shell32Delete.DeleteFile,
-                    scheduler: scheduler,
-                    settingsStore: settingsStore);
+                    deleterFactory: () => CreateDeleter(settingsStore),
+                    scheduler: scheduler);
 
                 RunForm(new MainForm(
                     showSettingsForm: !shouldStartService,
@@ -129,6 +128,14 @@ namespace TidyDesktopMonster
                     new FilesInDirectorySubject(currentUserDesktop, "*.lnk"),
                     new FilesInDirectorySubject(currentUserDesktop, "*.url"),
                 });
+        }
+
+        static IFileDeleter CreateDeleter(IKeyValueStore settingsStore)
+        {
+            bool skipRecycleBin = settingsStore.Read<bool?>(Constants.SkipRecycleBinSetting) ?? false;
+            return skipRecycleBin
+                ? (IFileDeleter)new PermanentDeleter()
+                : new RecycleBinDeleter();
         }
 
         static bool PathHasExtension(string path, string[] extensions)

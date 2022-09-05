@@ -9,19 +9,18 @@ using TidyDesktopMonster.WinApi.Shell32;
 
 namespace TidyDesktopMonster
 {
-    internal class WatchForFilesToDelete<T>
+    internal class WatchForFilesToDelete
     {
-        readonly Action<T, bool> _delete;
+        readonly Func<IFileDeleter> _deleterFactory;
         readonly WorkScheduler _scheduler;
-        readonly Func<IUpdatingSubject<T>> _subjectFactory;
-        readonly InMemoryKeyValueCache _settingsStore;
+        readonly Func<IUpdatingSubject<string>> _subjectFactory;
+        readonly IKeyValueStore _settingsStore;
 
-        public WatchForFilesToDelete(Func<IUpdatingSubject<T>> subjectFactory, Action<T, bool> delete, WorkScheduler scheduler, InMemoryKeyValueCache settingsStore)
+        public WatchForFilesToDelete(Func<IUpdatingSubject<string>> subjectFactory, Func<IFileDeleter> deleterFactory, WorkScheduler scheduler)
         {
-            _delete = delete;
+            _deleterFactory = deleterFactory;
             _scheduler = scheduler;
             _subjectFactory = subjectFactory;
-            _settingsStore = settingsStore;
         }
 
         public async Task Run(CancellationToken cancelToken)
@@ -33,8 +32,10 @@ namespace TidyDesktopMonster
             }
         }
 
-        async Task Run(CancellationToken cancelToken, IUpdatingSubject<T> subject)
+        async Task Run(CancellationToken cancelToken, IUpdatingSubject<string> subject)
         {
+            var deleter = _deleterFactory();
+
             subject.SubjectChanged += (obj, evt) => _scheduler.RunNow();
             subject.StartWatching();
 
@@ -42,7 +43,7 @@ namespace TidyDesktopMonster
 
             while (!cancelTask.IsCanceled)
             {
-                var subjects = Enumerable.Empty<T>();
+                var subjects = Enumerable.Empty<string>();
                 try
                 {
                     subjects = subject.GetSubjects();
@@ -57,10 +58,7 @@ namespace TidyDesktopMonster
                 {
                     try
                     {
-                        bool? skipRecycleBin = _settingsStore.Read<bool?>(Constants.SkipRecycleBinSetting);
-                        if (skipRecycleBin == null)
-                            skipRecycleBin = false;
-                            _delete(x, (bool)skipRecycleBin);
+                        deleter.DeleteFile(x);
                         Log.Info($"Deleted the file '{x}'");
                     }
                     catch (AccessDeniedException)
