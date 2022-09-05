@@ -56,6 +56,10 @@
   <ItemGroup>
     <Compile Include="AppHelper\SingleInstanceGuard.cs" />
     <Compile Include="AppHelper\StartupFolderRegistration.cs" />
+    <Compile Include="FileDeleter\PermanentDeleter.cs" />
+    <Compile Include="FileDeleter\RecycleBinDeleter.cs" />
+    <Compile Include="Interface\DeleteBehavior.cs" />
+    <Compile Include="Interface\IFileDeleter.cs" />
     <Compile Include="Subject\CompositeSubject.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Subject\FilteringSubject.cs" />

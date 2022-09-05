@@ -9,15 +9,16 @@ using TidyDesktopMonster.WinApi.Shell32;
 
 namespace TidyDesktopMonster
 {
-    internal class WatchForFilesToDelete<T>
+    internal class WatchForFilesToDelete
     {
-        readonly Action<T> _delete;
+        readonly Func<IFileDeleter> _deleterFactory;
         readonly WorkScheduler _scheduler;
-        readonly Func<IUpdatingSubject<T>> _subjectFactory;
+        readonly Func<IUpdatingSubject<string>> _subjectFactory;
+        readonly IKeyValueStore _settingsStore;
 
-        public WatchForFilesToDelete(Func<IUpdatingSubject<T>> subjectFactory, Action<T> delete, WorkScheduler scheduler)
+        public WatchForFilesToDelete(Func<IUpdatingSubject<string>> subjectFactory, Func<IFileDeleter> deleterFactory, WorkScheduler scheduler)
         {
-            _delete = delete;
+            _deleterFactory = deleterFactory;
             _scheduler = scheduler;
             _subjectFactory = subjectFactory;
         }
@@ -31,8 +32,10 @@ namespace TidyDesktopMonster
             }
         }
 
-        async Task Run(CancellationToken cancelToken, IUpdatingSubject<T> subject)
+        async Task Run(CancellationToken cancelToken, IUpdatingSubject<string> subject)
         {
+            var deleter = _deleterFactory();
+
             subject.SubjectChanged += (obj, evt) => _scheduler.RunNow();
             subject.StartWatching();
 
@@ -40,7 +43,7 @@ namespace TidyDesktopMonster
 
             while (!cancelTask.IsCanceled)
             {
-                var subjects = Enumerable.Empty<T>();
+                var subjects = Enumerable.Empty<string>();
                 try
                 {
                     subjects = subject.GetSubjects();
@@ -55,7 +58,7 @@ namespace TidyDesktopMonster
                 {
                     try
                     {
-                        _delete(x);
+                        deleter.DeleteFile(x);
                         Log.Info($"Deleted the file '{x}'");
                     }
                     catch (AccessDeniedException)

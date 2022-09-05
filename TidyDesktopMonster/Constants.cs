@@ -6,5 +6,6 @@
 
         public const string ShortcutFilterSetting = "ShortcutFilter";
         public const string TidyAllUsersSetting = "TidyAllUsers";
+        public const string SkipRecycleBinSetting = "SkipRecycleBin";
     }
 }

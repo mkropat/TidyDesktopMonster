@@ -48,6 +48,7 @@ namespace TidyDesktopMonster
             _systemMenu.EnsureAdded();
 
             TidyAllUsers.Checked = _settingsStore.Read<bool?>(Constants.TidyAllUsersSetting) ?? true;
+            SkipRecycleBin.Checked = _settingsStore.Read<bool?>(Constants.SkipRecycleBinSetting) ?? false;
 
             RunOnStartup.Checked = _startupRegistration.RunOnStartup;
             RunOnStartup.CheckedChanged += RunOnStartup_CheckedChanged;
@@ -78,6 +79,7 @@ namespace TidyDesktopMonster
                 case ServiceState.Started:
                     ShortcutFilter.Enabled = false;
                     TidyAllUsers.Enabled = false;
+                    SkipRecycleBin.Enabled = false;
                     ToggleService.Enabled = true;
                     ToggleService.Text = "Stop Tidying Desktop";
                     ServiceStatusText.ForeColor = SystemColors.WindowText;
@@ -87,6 +89,7 @@ namespace TidyDesktopMonster
                 case ServiceState.Stopping:
                     ShortcutFilter.Enabled = false;
                     TidyAllUsers.Enabled = false;
+                    SkipRecycleBin.Enabled = false;
                     ToggleService.Enabled = false;
                     ToggleService.Text = "Stop Tidying Desktop";
                     ServiceStatusText.ForeColor = SystemColors.WindowText;
@@ -96,6 +99,7 @@ namespace TidyDesktopMonster
                 case ServiceState.Stopped:
                     ShortcutFilter.Enabled = true;
                     TidyAllUsers.Enabled = true;
+                    SkipRecycleBin.Enabled = true;
                     ToggleService.Enabled = true;
                     ToggleService.Text = "Start Tidying Desktop";
                     ServiceStatusText.ForeColor = SystemColors.WindowText;
@@ -174,6 +178,12 @@ namespace TidyDesktopMonster
         {
             var checkbox = (CheckBox)sender;
             _settingsStore.Write(Constants.TidyAllUsersSetting, checkbox.Checked);
+        }
+
+        private void SkipRecycleBin_CheckedChanged(object sender, EventArgs e)
+        {
+            var checkbox = (CheckBox)sender;
+            _settingsStore.Write(Constants.SkipRecycleBinSetting, checkbox.Checked);
         }
 
         void RunOnStartup_CheckedChanged(object sender, EventArgs e)
