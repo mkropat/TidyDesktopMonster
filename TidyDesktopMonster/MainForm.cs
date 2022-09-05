@@ -48,6 +48,7 @@ namespace TidyDesktopMonster
             _systemMenu.EnsureAdded();
 
             TidyAllUsers.Checked = _settingsStore.Read<bool?>(Constants.TidyAllUsersSetting) ?? true;
+            SkipRecycleBin.Checked = _settingsStore.Read<bool?>(Constants.SkipRecycleBinSetting) ?? false;
 
             RunOnStartup.Checked = _startupRegistration.RunOnStartup;
             RunOnStartup.CheckedChanged += RunOnStartup_CheckedChanged;
