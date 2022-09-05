@@ -7,7 +7,7 @@ namespace TidyDesktopMonster.WinApi
     internal class SystemMenu
     {
         readonly IntPtr _handle;
-        bool _addedSeparator = false;
+        readonly bool _addedSeparator = false;
 
         public SystemMenu(IntPtr formHandle)
         {

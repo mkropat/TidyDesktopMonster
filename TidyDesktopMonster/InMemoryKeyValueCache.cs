@@ -25,7 +25,7 @@ namespace TidyDesktopMonster
 
         public void Write<T>(string key, T value)
         {
-            if (_cache.ContainsKey(key) && _cache[key] is T && EqualityComparer<T>.Default.Equals((T)_cache[key], value))
+            if (_cache.ContainsKey(key) && _cache[key] is T t && EqualityComparer<T>.Default.Equals(t, value))
                 return;
 
             _store.Write(key, value);

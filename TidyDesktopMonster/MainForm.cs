@@ -71,7 +71,7 @@ namespace TidyDesktopMonster
             }
         }
 
-        void SetServiceState(ServiceState state, string statusMessage="")
+        void SetServiceState(ServiceState state, string statusMessage = "")
         {
             switch (state)
             {

@@ -9,7 +9,7 @@ namespace TidyDesktopMonster.Logging
         static Exception _lastException = null;
         public static Exception LastException => _lastException;
 
-        static object _lock = new object();
+        static readonly object _lock = new object();
 
         public static void Debug(params object[] messages)
         {
