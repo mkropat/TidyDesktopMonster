@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.IO;
-using Microsoft.Win32;
 using TidyDesktopMonster.Interface;
 
 namespace TidyDesktopMonster.WinApi

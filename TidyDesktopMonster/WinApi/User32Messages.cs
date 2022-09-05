@@ -7,7 +7,7 @@ namespace TidyDesktopMonster.WinApi
 {
     internal static class User32Messages
     {
-        static ConcurrentDictionary<string, uint> _messages = new ConcurrentDictionary<string, uint>();
+        static readonly ConcurrentDictionary<string, uint> _messages = new ConcurrentDictionary<string, uint>();
 
         public static void PostMessage(IntPtr handle, string message)
         {
@@ -23,7 +23,8 @@ namespace TidyDesktopMonster.WinApi
 
         public static uint GetMessage(string name)
         {
-            return _messages.GetOrAdd(name, n => {
+            return _messages.GetOrAdd(name, n =>
+            {
                 var result = NativeMethods.RegisterWindowMessage(n);
                 if (result == 0)
                     throw new Win32Exception(Marshal.GetLastWin32Error());

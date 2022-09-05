@@ -9,7 +9,7 @@ namespace TidyDesktopMonster.AppHelper
     {
         public bool IsPrimaryInstance { get; }
 
-        Mutex _mutex;
+        readonly Mutex _mutex;
 
         public SingleInstanceGuard(string applicationId, Scope scope = Scope.LocalMachine)
         {

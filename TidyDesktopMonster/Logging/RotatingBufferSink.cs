@@ -12,7 +12,7 @@ namespace TidyDesktopMonster.Logging
 
         public event EventHandler SubjectChanged;
 
-        public RotatingBufferSink(int maxEntries=100)
+        public RotatingBufferSink(int maxEntries = 100)
         {
             _entries = new LogEntry[maxEntries + 1];
         }
